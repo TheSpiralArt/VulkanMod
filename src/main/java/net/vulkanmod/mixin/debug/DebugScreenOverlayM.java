@@ -3,6 +3,7 @@ package net.vulkanmod.mixin.debug;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
+import net.vulkanmod.config.Platform;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
@@ -54,7 +55,7 @@ public abstract class DebugScreenOverlayM {
 
         Device device = Vulkan.getDevice();
 
-        strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
+        strings.add(String.format("Java: %s", System.getProperty("java.version"));
         strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
         strings.add(String.format("Allocated: % 2d%% %03dMB", totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
         strings.add(String.format("Off-heap: " + getOffHeapMemory() + "MB"));
@@ -65,10 +66,9 @@ public abstract class DebugScreenOverlayM {
         strings.add("CPU: " + SystemInfo.cpuInfo);
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
+        strings.add("Platform: " + Platform.getStringFromPlat);
         strings.add("Vulkan: " + device.vkVersion);
         strings.add("");
-        strings.add("");
-
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
         return strings;
