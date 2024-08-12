@@ -16,6 +16,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
 import java.util.stream.IntStream;
+import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 
 public abstract class Options {
     public static boolean fullscreenDirty = false;
