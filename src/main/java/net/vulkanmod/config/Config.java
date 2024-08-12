@@ -23,6 +23,9 @@ public class Config {
 
     public boolean uniqueOpaqueLayer = true;
     public boolean entityCulling = true;
+    public boolean showDeviceRAM = true;
+    public int ramInfoUpdate = 10;
+    public boolean showlowRAM = false;
     public int device = -1;
 
     public int ambientOcclusion = 1;
