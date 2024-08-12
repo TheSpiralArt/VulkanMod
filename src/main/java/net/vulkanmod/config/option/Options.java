@@ -256,6 +256,12 @@ public abstract class Options {
                                 },
                                 () -> config.uniqueOpaqueLayer)
                                 .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.animations"),
+                                value -> {
+                                    config.animations = value;
+                                },
+                                () -> config.animations)
+                                .setTooltip(Component.translatable("vulkanmod.options.animations.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = value,
                                 () -> config.indirectDraw)
