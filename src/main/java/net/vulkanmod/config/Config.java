@@ -26,6 +26,7 @@ public class Config {
     public boolean showDeviceRAM = true;
     public int ramInfoUpdate = 10;
     public boolean showlowRAM = false;
+    public boolean resetHighUsageRec = false;
     public int device = -1;
 
     public int ambientOcclusion = 1;
