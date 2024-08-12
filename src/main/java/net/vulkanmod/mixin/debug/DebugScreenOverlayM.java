@@ -7,6 +7,7 @@ import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
+import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.memory.MemoryManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -69,10 +70,26 @@ public abstract class DebugScreenOverlayM {
         strings.add("Vulkan: " + device.vkVersion);
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
-        strings.add("");
-        strings.add("Patched by §eShadowMC69§r");
 
+        if (isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
+            strings.add("");
+            strings.add("Device RAM Info:");
+            strings.add(DeviceRAMInfo.getMemoryInfo());
+            strings.add(DeviceRAMInfo.getAvailableMemoryInfo());
+            strings.add(DeviceRAMInfo.getCurrentUsage());
+            strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
+            strings.add(DeviceRAMInfo.getBuffersInfo());
+            if (Initializer.CONFIG.showlowRAM) {
+                strings.add(DeviceRAMInfo.getAvailableRAMWarn());
+            }
+        }
+        
         return strings;
+    }
+
+    public static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
     }
 
     private long getOffHeapMemory() {
