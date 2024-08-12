@@ -275,6 +275,47 @@ public abstract class Options {
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
+                        new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
+                    maxImageCount, 1,
+                    value -> {
+                        config.imageCount = value;
+                        Renderer.scheduleSwapChainUpdate();
+                    }, () -> config.imageCount)
+                    .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
+                    value -> config.showDeviceRAM = AndroidDeviceChecker.isRunningOnCompatDevice() ? value : false,
+                    () -> AndroidDeviceChecker.isRunningOnCompatDevice() && config.showDeviceRAM)
+                    .setTooltip(
+                    Component.translatable("vulkanmod.options.runningOnAndroidLinux")
+                            .append(Component.literal(AndroidDeviceChecker.isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
+                            .append("\n\n")
+                            .append(Component.translatable("vulkanmod.options.showDeviceRAMInfo.tooltip"))),
+            new RangeOption(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay"), 0, 10, 1,
+                    value -> {
+                        if (value == 0) return Component.translatable("0.01s");
+                        else if (value == 1) return Component.translatable("0.1s");
+                        else if (value == 2) return Component.translatable("0.2s");
+                        else if (value == 3) return Component.translatable("0.3s");
+                        else if (value == 4) return Component.translatable("0.4s");
+                        else if (value == 5) return Component.translatable("0.5s");
+                        else if (value == 6) return Component.translatable("0.6s");
+                        else if (value == 7) return Component.translatable("0.7s");
+                        else if (value == 8) return Component.translatable("0.8s");
+                        else if (value == 9) return Component.translatable("0.9s");
+                        else if (value == 10) return Component.translatable("1s");
+                        return Component.literal(String.valueOf(value));
+                    },
+                    value -> config.ramInfoUpdate = value,
+                    () -> config.ramInfoUpdate)
+                    .setTooltip(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showLowRAM"),
+                    value -> config.showlowRAM = value,
+                    () -> config.showlowRAM)
+                    .setTooltip(Component.translatable("vulkanmod.options.showLowRAM.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.resetHighUsageRec"),
+                    value -> config.resetHighUsageRec = value,
+                    () -> config.resetHighUsageRec)
+                    .setTooltip(Component.translatable("vulkanmod.options.resetHighUsageRec.tooltip")),
                         new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
