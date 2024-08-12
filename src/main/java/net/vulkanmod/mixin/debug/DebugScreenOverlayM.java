@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static net.vulkanmod.Initializer.CONFIG;
 import static net.vulkanmod.Initializer.getVersion;
 
 @Mixin(DebugScreenOverlay.class)
@@ -62,7 +63,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("NativeMemory: %dMB".formatted(MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("DeviceMemory: %dMB".formatted(MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
         strings.add("");
-        strings.add("VulkanMod " + getVersion() + " [Patched]");
+        strings.add("VulkanMod " + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
@@ -71,7 +72,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
-        if (isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
+        if (isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
             strings.add("");
             strings.add("Device RAM Info:");
             strings.add(DeviceRAMInfo.getMemoryInfo());
@@ -79,7 +80,7 @@ public abstract class DebugScreenOverlayM {
             strings.add(DeviceRAMInfo.getCurrentUsage());
             strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
             strings.add(DeviceRAMInfo.getBuffersInfo());
-            if (Initializer.CONFIG.showlowRAM) {
+            if (CONFIG.showlowRAM) {
                 strings.add(DeviceRAMInfo.getAvailableRAMWarn());
             }
         }
