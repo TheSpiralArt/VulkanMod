@@ -88,7 +88,7 @@ public abstract class DebugScreenOverlayM {
         return strings;
     }
 
-    public static boolean isRunningOnCompatDevice() {
+    private static boolean isRunningOnCompatDevice() {
         String osName = System.getProperty("os.name").toLowerCase();
         return osName.contains("linux") || osName.contains("android");
     }
