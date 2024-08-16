@@ -339,14 +339,14 @@ public abstract class Options {
                     value -> config.showlowRAM = value,
                     () -> config.showlowRAM)
                     .setTooltip(Component.translatable("vulkanmod.options.showLowRAM.tooltip")),
-            new SwitchOption(Component.translatable("vulkanmod.options.showQueueFamily"),
-                    value -> config.showQueueFamily = value,
-                    () -> config.showQueueFamily)
-                    .setTooltip(Component.translatable("vulkanmod.options.showQueueFamily.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.resetHighUsageRec"),
                     value -> config.resetHighUsageRec = value,
                     () -> config.resetHighUsageRec)
                     .setTooltip(Component.translatable("vulkanmod.options.resetHighUsageRec.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showQueueFamily"),
+                    value -> config.showQueueFamily = value,
+                    () -> config.showQueueFamily)
+                    .setTooltip(Component.translatable("vulkanmod.options.showQueueFamily.tooltip")),
                         new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
