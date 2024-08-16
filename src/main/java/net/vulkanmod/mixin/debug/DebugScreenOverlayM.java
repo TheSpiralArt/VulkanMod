@@ -76,10 +76,10 @@ public abstract class DebugScreenOverlayM {
         if (CONFIG.showQueueFamily) {
             strings.add("");
             strings.add("Queue Families:");
-            strings.add("Graphics Queue: " + Queue.graphicsSupported ? "Supported" : "Unsupported");
-            strings.add("Present Queue: " + Queue.presentFallback ? "Fallback" : "Supported");
-            strings.add("Transfer Queue: " + Queue.transferFallback ? "Fallback" : "Supported");
-            strings.add("Compute Queue: " + Queue.computeFallback ? "Fallback" : "Supported");
+            strings.add("Graphics Queue: " + (Queue.graphicsSupported ? "Supported" : "Unsupported"));
+            strings.add("Present Queue: " + (Queue.presentFallback ? "Fallback" : "Supported"));
+            strings.add("Transfer Queue: " + (Queue.transferFallback ? "Fallback" : "Supported"));
+            strings.add("Compute Queue: " + (Queue.computeFallback ? "Fallback" : "Supported"));
         }
     
         if (isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
