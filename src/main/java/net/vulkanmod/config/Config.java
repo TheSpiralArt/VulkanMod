@@ -29,6 +29,7 @@ public class Config {
     public boolean resetHighUsageRec = false;
     public boolean animations = true;
     public int imageCount = 3;
+    public boolean showQueueFamily = true;
     public int device = -1;
 
     public int ambientOcclusion = 1;
