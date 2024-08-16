@@ -136,24 +136,18 @@ public abstract class Queue {
                 Initializer.LOGGER.warn("Using compute queue as present fallback");
             }
 
-            if (indices.computeFamily == -1) {
+            if (indices.transferFamily == -1) {
                 for (int i = 0; i < queueFamilies.capacity(); i++) {
                     int queueFlags = queueFamilies.get(i).queueFlags();
-
-                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
-                        indices.computeFamily = i;
-                        break;
+                    if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
+                        indices.transferFamily = i;
                     }
                 }
             }
 
             if (indices.transferFamily == -1) {
                 transferFallback = true;
-                if (indices.computeFamily != -1) {
-                    indices.transferFamily = indices.computeFamily;
-                } else {
-                    indices.transferFamily = indices.graphicsFamily;
-                }
+                indices.transferFamily = indices.computeFamily;
             }
 
             if (indices.computeFamily == -1) {
@@ -161,10 +155,10 @@ public abstract class Queue {
                 indices.computeFamily = indices.graphicsFamily;
             }
 
-            if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED)
-                throw new RuntimeException("Unable to find queue family with transfer support.");
             if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
+            if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED)
+                throw new RuntimeException("Unable to find queue family with transfer support.");
             if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with present support.");
             if (indices.computeFamily == VK_QUEUE_FAMILY_IGNORED)
