@@ -339,6 +339,10 @@ public abstract class Options {
                     value -> config.showlowRAM = value,
                     () -> config.showlowRAM)
                     .setTooltip(Component.translatable("vulkanmod.options.showLowRAM.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showQueueFamily"),
+                    value -> config.showQueueFamily = value,
+                    () -> config.showQueueFamily)
+                    .setTooltip(Component.translatable("vulkanmod.options.showQueueFamily.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.resetHighUsageRec"),
                     value -> config.resetHighUsageRec = value,
                     () -> config.resetHighUsageRec)
