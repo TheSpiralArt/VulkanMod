@@ -9,6 +9,7 @@ import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.memory.MemoryManager;
+import net.vulkanmod.vulkan.queue.Queue;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -72,6 +73,15 @@ public abstract class DebugScreenOverlayM {
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
+        if (CONFIG.showQueueFamily) {
+            strings.add("");
+            strings.add("Queue Families:");
+            strings.add("Graphics Queue: " + Queue.graphicsSupported ? "Supported" : "Unsupported");
+            strings.add("Present Queue: " + Queue.presentFallback ? "Fallback" : "Supported");
+            strings.add("Transfer Queue: " + Queue.transferFallback ? "Fallback" : "Supported");
+            strings.add("Compute Queue: " + Queue.computeFallback ? "Fallback" : "Supported");
+        }
+    
         if (isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
             strings.add("");
             strings.add("Device RAM Info:");
