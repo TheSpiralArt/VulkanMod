@@ -127,6 +127,16 @@ public abstract class Queue {
                     break;
             }
 
+            if (indices.computeFamily == -1) {
+                for (int i = 0; i < queueFamilies.capacity(); i++) {
+                    int queueFlags = queueFamilies.get(i).queueFlags();
+                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
+                        indices.computeFamily = i;
+                        break;
+                    }
+                }
+            }
+
             if (indices.presentFamily == -1) {
                 presentFallback = true;
                 // Some drivers will not show present support even if some queue supports it
@@ -141,6 +151,7 @@ public abstract class Queue {
                     int queueFlags = queueFamilies.get(i).queueFlags();
                     if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
                         indices.transferFamily = i;
+                        break;
                     }
                 }
             }
