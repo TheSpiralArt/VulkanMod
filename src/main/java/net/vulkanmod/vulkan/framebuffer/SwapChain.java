@@ -29,10 +29,6 @@ import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class SwapChain extends Framebuffer {
-    private static final int DEFAULT_IMAGE_COUNT = 3;
-
-    // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
-    // (As Immediate Mode (and by extension Screen tearing) doesn't exist on some Wayland installations currently)
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
 
     private final Long2ReferenceOpenHashMap<long[]> FBO_map = new Long2ReferenceOpenHashMap<>();
@@ -90,10 +86,7 @@ public class SwapChain extends Framebuffer {
                 return;
             }
 
-            // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
-            // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            int requestedImages = Math.max(DEFAULT_IMAGE_COUNT, surfaceProperties.capabilities.minImageCount());
-
+            int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
             IntBuffer imageCount = stack.ints(requestedImages);
 
             VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.calloc(stack);
@@ -121,7 +114,15 @@ public class SwapChain extends Framebuffer {
                 createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
             }
 
-            createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
+            // Set preTransform based on supported transforms
+            int preTransform;
+            if ((surfaceProperties.capabilities.supportedTransforms() & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) != 0) {
+                preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+            } else {
+                preTransform = surfaceProperties.capabilities.currentTransform();
+            }
+
+            createInfo.preTransform(preTransform);
             createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
             createInfo.presentMode(presentMode);
             createInfo.clipped(true);
@@ -144,6 +145,7 @@ public class SwapChain extends Framebuffer {
 
             LongBuffer pSwapchainImages = stack.mallocLong(imageCount.get(0));
 
+            Initializer.LOGGER.info("Requested Image Count -> " + requestedImages + " Actual Images -> " + imageCount.get(0));
             vkGetSwapchainImagesKHR(device, this.swapChainId, imageCount, pSwapchainImages);
 
             this.swapChainImages = new ArrayList<>(imageCount.get(0));
@@ -180,9 +182,7 @@ public class SwapChain extends Framebuffer {
     }
 
     private long[] createFramebuffers(RenderPass renderPass) {
-
         try (MemoryStack stack = MemoryStack.stackPush()) {
-
             long[] framebuffers = new long[this.swapChainImages.size()];
 
             for (int i = 0; i < this.swapChainImages.size(); ++i) {
@@ -219,8 +219,9 @@ public class SwapChain extends Framebuffer {
         if (!DYNAMIC_RENDERING) {
             long[] framebufferId = this.FBO_map.computeIfAbsent(renderPass.id, renderPass1 -> createFramebuffers(renderPass));
             renderPass.beginRenderPass(commandBuffer, framebufferId[Renderer.getCurrentImage()], stack);
-        } else
+        } else {
             renderPass.beginDynamicRendering(commandBuffer, stack);
+        }
 
         Renderer.getInstance().setBoundRenderPass(renderPass);
         Renderer.getInstance().setBoundFramebuffer(this);
@@ -234,8 +235,8 @@ public class SwapChain extends Framebuffer {
             this.FBO_map.clear();
         }
 
-        vkDestroySwapchainKHR(device, this.swapChainId, null);
-        this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
+        vkDestroySwapchainKHR(Vulkan.getVkDevice(), this.swapChainId, null);
+        this.swapChainImages.forEach(image -> vkDestroyImageView(Vulkan.getVkDevice(), image.getImageView(), null));
 
         this.depthAttachment.free();
     }
@@ -310,12 +311,11 @@ public class SwapChain extends Framebuffer {
     }
 
     private static VkExtent2D getExtent(VkSurfaceCapabilitiesKHR capabilities) {
-
         if (capabilities.currentExtent().width() != UINT32_MAX) {
             return capabilities.currentExtent();
         }
 
-        //Fallback
+        // Fallback
         IntBuffer width = stackGet().ints(0);
         IntBuffer height = stackGet().ints(0);
 
@@ -342,7 +342,7 @@ public class SwapChain extends Framebuffer {
                     }
                 }
             }
-            return VK_PRESENT_MODE_FIFO_KHR; //If None of the request modes exist/are supported by Driver
+            return VK_PRESENT_MODE_FIFO_KHR; // If none of the request modes exist/are supported by Driver
         }
     }
 
