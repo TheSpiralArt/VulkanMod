@@ -100,6 +100,7 @@ public abstract class Queue {
                     vkGetPhysicalDeviceSurfaceSupportKHR(device, g, Vulkan.getSurface(), presentSupport);
                     if (presentSupport.get(0) == VK_TRUE) {
                         indices.presentFamily = g;
+                        break;
                     }
                 }
             }
@@ -109,6 +110,7 @@ public abstract class Queue {
 
                 if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0 && indices.computeFamily == VK_QUEUE_FAMILY_IGNORED) {
                     indices.computeFamily = c;
+                    break;
                 }
             }
 
@@ -119,6 +121,7 @@ public abstract class Queue {
                     (queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT)) == 0 &&
                     indices.transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                     indices.transferFamily = t;
+                    break;
                 }
             }
 
@@ -146,18 +149,21 @@ public abstract class Queue {
                 presentFallback = true;
                 indices.presentFamily = indices.computeFamily != VK_QUEUE_FAMILY_IGNORED ? indices.computeFamily : indices.graphicsFamily;
                 Initializer.LOGGER.warn("Using fallback for present queue");
+                break;
             }
 
             if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 transferFallback = true;
                 indices.transferFamily = indices.computeFamily != VK_QUEUE_FAMILY_IGNORED ? indices.computeFamily : indices.graphicsFamily;
                 Initializer.LOGGER.warn("Using fallback for transfer queue");
+                break;
             }
 
             if (indices.computeFamily == VK_QUEUE_FAMILY_IGNORED) {
                 computeFallback = true;
                 indices.computeFamily = indices.graphicsFamily;
                 Initializer.LOGGER.warn("Using fallback for compute queue");
+                break;
             }
 
             if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
