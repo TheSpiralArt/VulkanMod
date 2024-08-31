@@ -18,23 +18,23 @@ project.ext.macosNatives = "natives-macos"
 project.ext.macosArmNatives = "natives-macos-arm64"
 
 dependencies {
-	include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
+	implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
 
-	include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
-	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosArmNatives"))
+	implementation("org.lwjgl:lwjgl-vma:$lwjglVersion")
+        runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives")
+        runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives")
+        runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosNatives")
+        runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosArmNatives")
 
-	include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
-	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$winNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosArmNatives"))
+	implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion")
+        runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$winNatives")
+        runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives")
+        runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosNatives")
+        runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosArmNatives")
 
-	//MoltenVK
-	include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosNatives"))
-	include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosArmNatives"))
+        // MoltenVK
+        runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosNatives")
+        runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosArmNatives")
 }
 
 repositories {
