@@ -7,7 +7,9 @@ import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
+import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.memory.MemoryManager;
+import net.vulkanmod.vulkan.queue.Queue;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//import static net.vulkanmod.Initializer.CONFIG;
 import static net.vulkanmod.Initializer.getVersion;
 
 @Mixin(DebugScreenOverlay.class)
@@ -65,14 +68,40 @@ public abstract class DebugScreenOverlayM {
         strings.add("CPU: " + SystemInfo.cpuInfo);
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
+        strings.add("Instance: " + device.vkInstanceLoaderVersion);
         strings.add("Vulkan: " + device.vkVersion);
         strings.add("");
-        strings.add("");
-
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
+        //if (CONFIG.showQueueFamily) {
+        //    strings.add("");
+        //    strings.add("Device Queue Families:");
+        //    strings.add("Graphics Queue: " + (Queue.graphicsSupported ? "§aSupported§r" : "§cUnsupported§r"));
+        //    strings.add("Present Queue: " + (Queue.presentFallback ? "§eFallback§r" : "§aSupported§r"));
+        //    strings.add("Transfer Queue: " + (Queue.transferFallback ? "§eFallback§r" : "§aSupported§r"));
+        //    strings.add("Compute Queue: " + (Queue.computeFallback ? "§eFallback§r" : "§aSupported§r"));
+        //}
+    
+        //if (isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
+        //    strings.add("");
+        //    strings.add("Device RAM Info:");
+        //    strings.add(DeviceRAMInfo.getMemoryInfo());
+        //    strings.add(DeviceRAMInfo.getAvailableMemoryInfo());
+        //    strings.add(DeviceRAMInfo.getCurrentUsage());
+        //    strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
+        //    strings.add(DeviceRAMInfo.getBuffersInfo());
+        //    if (CONFIG.showlowRAM) {
+        //        strings.add(DeviceRAMInfo.getAvailableRAMWarn());
+        //    }
+        //}
+        
         return strings;
     }
+
+    //private static boolean isRunningOnCompatDevice() {
+    //    String osName = System.getProperty("os.name").toLowerCase();
+    //    return osName.contains("linux") || osName.contains("android");
+    //}
 
     private long getOffHeapMemory() {
         return bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed());
