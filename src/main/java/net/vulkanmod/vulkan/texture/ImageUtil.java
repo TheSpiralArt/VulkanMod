@@ -43,7 +43,7 @@ public abstract class ImageUtil {
             long imageSize = (long) image.width * image.height * image.formatSize;
 
             VkPhysicalDeviceMemoryProperties memoryProperties = VkPhysicalDeviceMemoryProperties.malloc(stack);
-            vkGetPhysicalDeviceMemoryProperties(DeviceManager.getPhysicalDevice(), memoryProperties);
+            vkGetPhysicalDeviceMemoryProperties(DeviceManager.pickPhysicalDevice(), memoryProperties);
 
             int memoryPropertiesFlags;
             int regularMemProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
