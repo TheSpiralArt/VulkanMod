@@ -15,13 +15,11 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public abstract class ImageUtil {
 
-    public static void copyBufferToImageCmd(VkCommandBuffer commandBuffer, long buffer, long image, int mipLevel, int width, int height, int xOffset, int yOffset, int bufferOffset, int bufferRowLenght, int bufferImageHeight) {
-
+    public static void copyBufferToImageCmd(VkCommandBuffer commandBuffer, long buffer, long image, int mipLevel, int width, int height, int xOffset, int yOffset, int bufferOffset, int bufferRowLength, int bufferImageHeight) {
         try (MemoryStack stack = stackPush()) {
-
             VkBufferImageCopy.Buffer region = VkBufferImageCopy.calloc(1, stack);
             region.bufferOffset(bufferOffset);
-            region.bufferRowLength(bufferRowLenght);   // Tightly packed
+            region.bufferRowLength(bufferRowLength);   // Tightly packed
             region.bufferImageHeight(bufferImageHeight);  // Tightly packed
             region.imageSubresource().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
             region.imageSubresource().mipLevel(mipLevel);
@@ -44,9 +42,14 @@ public abstract class ImageUtil {
 
             LongBuffer pStagingBuffer = stack.mallocLong(1);
             PointerBuffer pStagingAllocation = stack.pointers(0L);
+
+            // Determine the memory properties to use
+            int memoryProperties = determineMemoryProperties();
+
+            // Create the buffer with the appropriate memory properties
             MemoryManager.getInstance().createBuffer(imageSize,
                     VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                    memoryProperties,
                     pStagingBuffer,
                     pStagingAllocation);
 
@@ -64,12 +67,37 @@ public abstract class ImageUtil {
         }
     }
 
-    public static void copyImageToBuffer(VkCommandBuffer commandBuffer, long buffer, long image, int mipLevel, int width, int height, int xOffset, int yOffset, int bufferOffset, int bufferRowLenght, int bufferImageHeight) {
+    private static int determineMemoryProperties() {
         try (MemoryStack stack = stackPush()) {
+            VkPhysicalDeviceMemoryProperties memoryProperties = VkPhysicalDeviceMemoryProperties.calloc(stack);
+            vkGetPhysicalDeviceMemoryProperties(DeviceManager.vkPhysicalDevice, memoryProperties);
 
+            int requiredProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+
+            if (isMemoryTypeSupported(memoryProperties, requiredProperties)) {
+                return requiredProperties;
+            } else {
+                // Fallback to only HOST_VISIBLE and HOST_CACHED if the full combination is not supported
+                return VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+            }
+        }
+    }
+
+    private static boolean isMemoryTypeSupported(VkPhysicalDeviceMemoryProperties memoryProperties, int requiredProperties) {
+        for (int i = 0; i < memoryProperties.memoryTypeCount(); i++) {
+            int propertyFlags = memoryProperties.memoryTypes(i).propertyFlags();
+            if ((propertyFlags & requiredProperties) == requiredProperties) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void copyImageToBuffer(VkCommandBuffer commandBuffer, long buffer, long image, int mipLevel, int width, int height, int xOffset, int yOffset, int bufferOffset, int bufferRowLength, int bufferImageHeight) {
+        try (MemoryStack stack = stackPush()) {
             VkBufferImageCopy.Buffer region = VkBufferImageCopy.calloc(1, stack);
             region.bufferOffset(bufferOffset);
-            region.bufferRowLength(bufferRowLenght);   // Tightly packed
+            region.bufferRowLength(bufferRowLength);   // Tightly packed
             region.bufferImageHeight(bufferImageHeight);  // Tightly packed
             region.imageSubresource().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
             region.imageSubresource().mipLevel(mipLevel);
@@ -84,7 +112,6 @@ public abstract class ImageUtil {
 
     public static void generateMipmaps(VulkanImage image) {
         try (MemoryStack stack = stackPush()) {
-
             CommandPool.CommandBuffer commandBuffer = DeviceManager.getGraphicsQueue().beginCommands();
 
             image.transitionImageLayout(stack, commandBuffer.getHandle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -143,7 +170,6 @@ public abstract class ImageUtil {
                         image.getId(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                         blit,
                         VK_FILTER_LINEAR);
-
             }
 
             VkImageMemoryBarrier.Buffer barrier = VkImageMemoryBarrier.calloc(1, stack);
@@ -162,21 +188,23 @@ public abstract class ImageUtil {
             barrier.subresourceRange().aspectMask(image.aspect);
 
             barrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
+            barrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
             barrier.dstAccessMask(VK_ACCESS_SHADER_READ_BIT);
 
             vkCmdPipelineBarrier(commandBuffer.getHandle(),
-                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
                     0,
                     null,
                     null,
                     barrier);
 
-            barrier.oldLayout(VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+            barrier.oldLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+            barrier.newLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             barrier.subresourceRange().baseMipLevel(image.mipLevels - 1);
             barrier.subresourceRange().levelCount(1);
 
             vkCmdPipelineBarrier(commandBuffer.getHandle(),
-                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
                     0,
                     null,
                     null,
@@ -185,7 +213,6 @@ public abstract class ImageUtil {
             image.setCurrentLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
             long fence = DeviceManager.getGraphicsQueue().submitCommands(commandBuffer);
-
             vkWaitForFences(DeviceManager.vkDevice, fence, true, VUtil.UINT64_MAX);
         }
     }
