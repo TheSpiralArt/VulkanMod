@@ -32,8 +32,8 @@ public abstract class Options {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             final VkSurfaceCapabilitiesKHR capabilities = VkSurfaceCapabilitiesKHR.malloc(stack);
             vkGetPhysicalDeviceSurfaceCapabilitiesKHR(DeviceManager.physicalDevice, Vulkan.getSurface(), capabilities);
-            minImageCount = capabilities.minImageCount();
-            maxImageCount = Math.min(capabilities.maxImageCount(), 32);
+            final minImageCount = capabilities.minImageCount();
+            final maxImageCount = Math.min(capabilities.maxImageCount(), 32);
         }
     }
 
@@ -296,7 +296,7 @@ public abstract class Options {
         return new OptionBlock[]{
                 new OptionBlock("", new Option[]{
                         new RangeOption(Component.translatable("vulkanmod.options.frameQueue"),
-                                2, 5, 1,
+                                1, 5, 1,
                                 value -> {
                                     config.frameQueueSize = value;
                                     Renderer.scheduleSwapChainUpdate();
