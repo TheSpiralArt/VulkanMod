@@ -42,25 +42,11 @@ public abstract class ImageUtil {
 
             long imageSize = (long) image.width * image.height * image.formatSize;
 
-            VkPhysicalDeviceMemoryProperties memoryProperties = VkPhysicalDeviceMemoryProperties.malloc(stack);
-            vkGetPhysicalDeviceMemoryProperties(DeviceManager.pickPhysicalDevice(), memoryProperties);
-
-            int memoryPropertiesFlags;
-            int regularMemProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
-            int fallbackMemProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
-
-            if ((memoryProperties.memoryTypes(0).propertyFlags() & (regularMemProperties)) ==
-                    (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT)) {
-                memoryPropertiesFlags = regularMemProperties;
-            } else {
-                memoryPropertiesFlags = fallbackMemProperties;
-            }
-
             LongBuffer pStagingBuffer = stack.mallocLong(1);
             PointerBuffer pStagingAllocation = stack.pointers(0L);
             MemoryManager.getInstance().createBuffer(imageSize,
                     VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                    memoryPropertiesFlags,
+                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
                     pStagingBuffer,
                     pStagingAllocation);
 
