@@ -32,8 +32,8 @@ public abstract class Options {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             final VkSurfaceCapabilitiesKHR capabilities = VkSurfaceCapabilitiesKHR.malloc(stack);
             vkGetPhysicalDeviceSurfaceCapabilitiesKHR(DeviceManager.physicalDevice, Vulkan.getSurface(), capabilities);
-            final minImageCount = capabilities.minImageCount();
-            final maxImageCount = Math.min(capabilities.maxImageCount(), 32);
+            minImageCount = capabilities.minImageCount();
+            maxImageCount = Math.min(capabilities.maxImageCount(), 32);
         }
     }
 
