@@ -28,7 +28,7 @@ public abstract class Options {
     private static final int minImageCount;
     private static final int maxImageCount;
 
-    public static final boolean drawIndirectSupported = DeviceManager.deviceInfo.isDrawIndirectSupported();
+    public static final boolean drawIndirectSupported = DeviceManager.device.isDrawIndirectSupported();
 
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
