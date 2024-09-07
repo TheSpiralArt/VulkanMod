@@ -28,6 +28,8 @@ public abstract class Options {
     private static final int minImageCount;
     private static final int maxImageCount;
 
+    public static final boolean drawIndirectSupported = DeviceManager.deviceInfo.isDrawIndirectSupported();
+
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             final VkSurfaceCapabilitiesKHR capabilities = VkSurfaceCapabilitiesKHR.malloc(stack);
@@ -284,9 +286,13 @@ public abstract class Options {
                                 () -> config.animations)
                                 .setTooltip(Component.translatable("vulkanmod.options.animations.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
-                                value -> config.indirectDraw = value,
-                                () -> config.indirectDraw)
-                                .setTooltip(Component.translatable("vulkanmod.options.indirectDraw.tooltip")),
+                                value -> config.indirectDraw = drawIndirectSupported ? value : false,
+                                    () -> drawIndirectSupported && config.indirectDraw)
+                                .setTooltip(
+                                    Component.translatable("vulkanmod.options.indirectDrawSupported")
+                                        .append(Component.literal(drawIndirectSupported ? "§aYes§r" : "§cNo§r"))
+                                        .append("\n\n")
+                                        .append(Component.translatable("vulkanmod.options.indirectDraw.tooltip")))
                 })
         };
 
