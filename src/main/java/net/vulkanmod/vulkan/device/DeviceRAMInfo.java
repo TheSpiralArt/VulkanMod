@@ -173,7 +173,7 @@ public class DeviceRAMInfo {
                 double memFreeMB = memFree / 1024.0;
                 long freeMemoryPercentage = (memFree * 100) / memTotal;
                 String colorPerc = getColorPercentage(freeMemoryPercentage);
-                return String.format("Available RAM: %.2f MB / %s%d%%", memFreeMB, colorPerc, freeMemoryPercentage);
+                return String.format("Available RAM: %.2f MB (%s%d%%)", memFreeMB, colorPerc, freeMemoryPercentage);
             }
         } finally {
             lock.unlock();
@@ -219,19 +219,6 @@ public class DeviceRAMInfo {
 
     private static long extractMemoryValue(String memoryLine) {
         return Long.parseLong(memoryLine.split("\\s+")[1]);
-    }
-
-    public static String getAvailableRAMWarn() {
-        lock.lock();
-        try {
-            double memFreeMB = memFree / 1024.0;
-            if (memFreeMB < 500) {
-                return memFreeMB > 300 ? "RAM running low, the game will start to lag." : "RAM running very low, the game will lag significantly and has a chance to crash.";
-            }
-        } finally {
-            lock.unlock();
-        }
-        return "";
     }
 
     private static String getColorPercentage(long freeMemoryPercentage) {
