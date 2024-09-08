@@ -23,9 +23,8 @@ public class Config {
 
     public boolean uniqueOpaqueLayer = true;
     public boolean entityCulling = true;
-    public boolean showDeviceRAM = true;
+    public boolean showDeviceRAM = false;
     public int ramInfoUpdate = 10;
-    public boolean showlowRAM = false;
     public boolean resetHighUsageRec = false;
     public boolean animations = true;
     public int imageCount = 3;
