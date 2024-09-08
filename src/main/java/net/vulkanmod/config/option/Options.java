@@ -290,7 +290,7 @@ public abstract class Options {
                                     () -> drawIndirectSupported && config.indirectDraw)
                                 .setTooltip(
                                     Component.translatable("vulkanmod.options.indirectDrawSupported")
-                                        .append(Component.literal(drawIndirectSupported ? "§aYes§r" : "§cNo§r"))
+                                        .append(Component.translatable(drawIndirectSupported ? "vulkanmod.options.yes" : "vulkanmod.options.no"))
                                         .append("\n\n")
                                         .append(Component.translatable("vulkanmod.options.indirectDraw.tooltip")))
                 })
@@ -320,7 +320,7 @@ public abstract class Options {
                     () -> isRunningOnCompatDevice() && config.showDeviceRAM)
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnAndroidLinux")
-                            .append(Component.literal(isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
+                            .append(Component.translatable(isRunningOnCompatDevice() ? "vulkanmod.options.yes" : "vulkanmod.options.no"))
                             .append("\n\n")
                             .append(Component.translatable("vulkanmod.options.showDeviceRAMInfo.tooltip"))),
             new RangeOption(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay"), 0, 10, 1,
@@ -341,10 +341,6 @@ public abstract class Options {
                     value -> config.ramInfoUpdate = value,
                     () -> config.ramInfoUpdate)
                     .setTooltip(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay.tooltip")),
-            new SwitchOption(Component.translatable("vulkanmod.options.showLowRAM"),
-                    value -> config.showlowRAM = value,
-                    () -> config.showlowRAM)
-                    .setTooltip(Component.translatable("vulkanmod.options.showLowRAM.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.resetHighUsageRec"),
                     value -> config.resetHighUsageRec = value,
                     () -> config.resetHighUsageRec)
