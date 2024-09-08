@@ -90,9 +90,6 @@ public abstract class DebugScreenOverlayM {
             strings.add(DeviceRAMInfo.getCurrentUsage());
             strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
             strings.add(DeviceRAMInfo.getBuffersInfo());
-            if (CONFIG.showlowRAM) {
-                strings.add(DeviceRAMInfo.getAvailableRAMWarn());
-            }
         }
         
         return strings;
