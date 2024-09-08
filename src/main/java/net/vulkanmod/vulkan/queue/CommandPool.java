@@ -67,7 +67,7 @@ public class CommandPool {
                     vkCreateFence(Vulkan.getVkDevice(), fenceInfo, null, pFence);
 
                     CommandBuffer commandBuffer = new CommandBuffer(new VkCommandBuffer(pCommandBuffer.get(i), Vulkan.getVkDevice()), pFence.get(0));
-                    commandBuffer.handle = new VkCommandBuffer(pCommandBuffer.get(i), Vulkan.getVkDevice());
+
                     commandBuffers.add(commandBuffer);
                     availableCmdBuffers.add(commandBuffer);
                 }
