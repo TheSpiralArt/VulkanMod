@@ -195,7 +195,7 @@ public class DeviceRAMInfo {
             if (highestRAMUsedRecord != 0) {
                 double highestCurrentUsageRecordMB = highestCurrentUsageRecord / 1024.0;
                 String color = highestCurrentUsageRecord > 0 ? "§c↑" : "§a↓";
-                highestRAMUsedRecorded = String.format("(%s%.2f MB)§r", color, Math.abs(highestCurrentUsageRecordMB));
+                highestRAMUsedRecorded = String.format("(%s%.2f MB§r)", color, Math.abs(highestCurrentUsageRecordMB));
             }
 
             return highestCurrentUsageRecorded + "§r " + highestRAMUsedRecorded;
