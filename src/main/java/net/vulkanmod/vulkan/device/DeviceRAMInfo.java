@@ -173,7 +173,7 @@ public class DeviceRAMInfo {
                 double memFreeMB = memFree / 1024.0;
                 long freeMemoryPercentage = (memFree * 100) / memTotal;
                 String colorPerc = getColorPercentage(freeMemoryPercentage);
-                return String.format("Available RAM: %.2f MB (%s%d%%)", memFreeMB, colorPerc, freeMemoryPercentage);
+                return String.format("Available RAM: %.2f MB (%s%d%%§r)", memFreeMB, colorPerc, freeMemoryPercentage);
             }
         } finally {
             lock.unlock();
@@ -195,7 +195,7 @@ public class DeviceRAMInfo {
 
             if (highestRAMUsedRecord != 0) {
                 double highestRAMUsedRecordedMB = highestRAMUsedRecord / 1024.0;
-                highestRAMUsedRecorded = String.format("Highest RAM Used: %.2f MB", highestRAMUsedRecordedMB);
+                highestRAMUsedRecorded = String.format(" (%.2f§r MB)", highestRAMUsedRecordedMB);
             }
 
             return highestCurrentUsageRecorded + "§r / " + highestRAMUsedRecorded;
