@@ -188,14 +188,14 @@ public class DeviceRAMInfo {
             String highestRAMUsedRecorded = "Highest RAM Used: Unavailable";
 
             if (highestCurrentUsageRecord != 0) {
-                double highestCurrentUsageRecordMB = highestCurrentUsageRecord / 1024.0;
-                String color = highestCurrentUsageRecord > 0 ? "§c↑" : "§a↓";
-                highestCurrentUsageRecorded = String.format("Highest Usage: %s%.2f MB", color, Math.abs(highestCurrentUsageRecordMB));
+                double highestRAMUsedRecordedMB = highestRAMUsedRecord / 1024.0;
+                highestCurrentUsageRecorded = String.format("Highest Usage: %s%.2f MB", color, highestRAMUsedRecordedMB);
             }
 
             if (highestRAMUsedRecord != 0) {
-                double highestRAMUsedRecordedMB = highestRAMUsedRecord / 1024.0;
-                highestRAMUsedRecorded = String.format(" (%.2f§r MB)", highestRAMUsedRecordedMB);
+                double highestCurrentUsageRecordMB = highestCurrentUsageRecord / 1024.0;
+                String color = highestCurrentUsageRecord > 0 ? "§c↑" : "§a↓";
+                highestRAMUsedRecorded = String.format(" (%.2f§r MB)", Math.abs(highestCurrentUsageRecordMB));
             }
 
             return highestCurrentUsageRecorded + "§r / " + highestRAMUsedRecorded;
