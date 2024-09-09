@@ -41,6 +41,7 @@ import static com.mojang.blaze3d.platform.GlConst.GL_DEPTH_BUFFER_BIT;
 import static net.vulkanmod.vulkan.Vulkan.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
+import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
@@ -700,7 +701,7 @@ public class Renderer {
 
         try (MemoryStack stack = stackPush()) {
             VkExtent2D extent = VkExtent2D.malloc(stack);
-            Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+            Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
             // Since our x and y are still in Minecraft's coordinate space, pre-transform the framebuffer's width and height to get expected results.
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
