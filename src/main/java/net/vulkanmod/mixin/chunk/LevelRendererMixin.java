@@ -27,9 +27,6 @@ import java.util.SortedSet;
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
 
-    @Shadow
-    protected abstract boolean shouldShowEntityOutlines();
-
     @Shadow @Final
     private RenderBuffers renderBuffers;
 
@@ -68,6 +65,11 @@ public abstract class LevelRendererMixin {
     @Overwrite
     private void setupRender(Camera camera, Frustum frustum, boolean isCapturedFrustum, boolean spectator) {
         this.worldRenderer.setupRenderer(camera, frustum, isCapturedFrustum, spectator);
+    }
+
+    @Overwrite
+    public boolean shouldShowEntityOutlines() {
+        return Initializer.CONFIG.entityOutline;
     }
 
     /**
