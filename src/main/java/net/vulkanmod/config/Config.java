@@ -29,6 +29,7 @@ public class Config {
     public boolean animations = true;
     public int imageCount = 3;
     public boolean showQueueFamily = false;
+    public boolean entityOutline = true;
     public boolean renderSky = true;
     public int device = -1;
 
