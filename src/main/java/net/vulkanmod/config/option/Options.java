@@ -287,7 +287,7 @@ public abstract class Options {
                                 .setTooltip(Component.translatable("vulkanmod.options.animations.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.renderSky"),
                                 value -> config.renderSky = value,
-                                () -> config.renderSky),
+                                () -> config.renderSky)
                                 .setTooltip(Component.translatable("vulkanmod.options.renderSky.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = drawIndirectSupported ? value : false,
