@@ -31,6 +31,8 @@ public class Config {
     public boolean showQueueFamily = false;
     public boolean entityOutline = true;
     public boolean renderSky = true;
+    public boolean colorClear = true;
+    public boolean depthClears = true;
     public int device = -1;
 
     public int ambientOcclusion = 1;
