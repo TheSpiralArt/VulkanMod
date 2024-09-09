@@ -94,6 +94,10 @@ public abstract class VRenderSystem {
     }
 
     public static void applyModelViewMatrix(Matrix4f mat) {
+        mat.get(modelViewMatrix.buffer.asFloatBuffer());
+    }
+
+    public static void applyProjectionMatrix(Matrix4f mat) {
         Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
         FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
         // This allows us to skip allocating an object
@@ -106,10 +110,6 @@ public abstract class VRenderSystem {
         	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
         }
         //MemoryUtil.memPutFloat(MemoryUtil.memAddress(modelViewMatrix), 1);
-    }
-
-    public static void applyProjectionMatrix(Matrix4f mat) {
-        mat.get(projectionMatrix.buffer.asFloatBuffer());
     }
 
     public static void calculateMVP() {
