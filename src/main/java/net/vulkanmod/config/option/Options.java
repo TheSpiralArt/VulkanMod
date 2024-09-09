@@ -10,9 +10,13 @@ import net.vulkanmod.config.video.VideoModeManager;
 import net.vulkanmod.config.video.VideoModeSet;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
+import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
 import java.util.stream.IntStream;
+import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 
 public abstract class Options {
     public static boolean fullscreenDirty = false;
@@ -20,6 +24,25 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
+
+    private static final int minImageCount;
+    private static final int maxImageCount;
+
+    public static final boolean drawIndirectSupported = DeviceManager.device.isDrawIndirectSupported();
+
+    static {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            final VkSurfaceCapabilitiesKHR capabilities = VkSurfaceCapabilitiesKHR.malloc(stack);
+            vkGetPhysicalDeviceSurfaceCapabilitiesKHR(DeviceManager.physicalDevice, Vulkan.getSurface(), capabilities);
+            minImageCount = capabilities.minImageCount();
+            maxImageCount = Math.min(capabilities.maxImageCount(), 32);
+        }
+    }
+
+    private static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
+    }
 
     public static OptionBlock[] getVideoOpts() {
         var videoMode = config.videoMode;
@@ -215,8 +238,8 @@ public abstract class Options {
                                 () -> minecraftOptions.entityShadows().get()),
                         new RangeOption(Component.translatable("options.entityDistanceScaling"),
                                 50, 500, 25,
-                                value -> minecraftOptions.entityDistanceScaling().set(value * 0.01),
-                                () -> minecraftOptions.entityDistanceScaling().get().intValue() * 100),
+                                value -> minecraftOptions.entityDistanceScaling().set(value / 100.0),
+                                () -> (int)(minecraftOptions.entityDistanceScaling().get() * 100)),
                         new CyclingOption<>(Component.translatable("options.mipmapLevels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
@@ -256,10 +279,20 @@ public abstract class Options {
                                 },
                                 () -> config.uniqueOpaqueLayer)
                                 .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.animations"),
+                                value -> {
+                                    config.animations = value;
+                                },
+                                () -> config.animations)
+                                .setTooltip(Component.translatable("vulkanmod.options.animations.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
-                                value -> config.indirectDraw = value,
-                                () -> config.indirectDraw)
-                                .setTooltip(Component.translatable("vulkanmod.options.indirectDraw.tooltip")),
+                                value -> config.indirectDraw = drawIndirectSupported ? value : false,
+                                    () -> drawIndirectSupported && config.indirectDraw)
+                                .setTooltip(
+                                    Component.translatable("vulkanmod.options.indirectDrawSupported")
+                                        .append(Component.translatable(drawIndirectSupported ? "vulkanmod.options.yes" : "vulkanmod.options.no"))
+                                        .append("\n\n")
+                                        .append(Component.translatable("vulkanmod.options.indirectDraw.tooltip")))
                 })
         };
 
@@ -269,12 +302,53 @@ public abstract class Options {
         return new OptionBlock[]{
                 new OptionBlock("", new Option[]{
                         new RangeOption(Component.translatable("vulkanmod.options.frameQueue"),
-                                2, 5, 1,
+                                1, 5, 1,
                                 value -> {
                                     config.frameQueueSize = value;
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
+                        new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
+                    maxImageCount, 1,
+                    value -> {
+                        config.imageCount = value;
+                        Renderer.scheduleSwapChainUpdate();
+                    }, () -> config.imageCount)
+                    .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
+                    value -> config.showDeviceRAM = isRunningOnCompatDevice() ? value : false,
+                    () -> isRunningOnCompatDevice() && config.showDeviceRAM)
+                    .setTooltip(
+                    Component.translatable("vulkanmod.options.runningOnAndroidLinux")
+                            .append(Component.translatable(isRunningOnCompatDevice() ? "vulkanmod.options.yes" : "vulkanmod.options.no"))
+                            .append("\n\n")
+                            .append(Component.translatable("vulkanmod.options.showDeviceRAMInfo.tooltip"))),
+            new RangeOption(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay"), 0, 10, 1,
+                    value -> {
+                        if (value == 0) return Component.translatable("0.01s");
+                        else if (value == 1) return Component.translatable("0.1s");
+                        else if (value == 2) return Component.translatable("0.2s");
+                        else if (value == 3) return Component.translatable("0.3s");
+                        else if (value == 4) return Component.translatable("0.4s");
+                        else if (value == 5) return Component.translatable("0.5s");
+                        else if (value == 6) return Component.translatable("0.6s");
+                        else if (value == 7) return Component.translatable("0.7s");
+                        else if (value == 8) return Component.translatable("0.8s");
+                        else if (value == 9) return Component.translatable("0.9s");
+                        else if (value == 10) return Component.translatable("1s");
+                        return Component.literal(String.valueOf(value));
+                    },
+                    value -> config.ramInfoUpdate = value,
+                    () -> config.ramInfoUpdate)
+                    .setTooltip(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.resetHighUsageRec"),
+                    value -> config.resetHighUsageRec = value,
+                    () -> config.resetHighUsageRec)
+                    .setTooltip(Component.translatable("vulkanmod.options.resetHighUsageRec.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showQueueFamily"),
+                    value -> config.showQueueFamily = value,
+                    () -> config.showQueueFamily)
+                    .setTooltip(Component.translatable("vulkanmod.options.showQueueFamily.tooltip")),
                         new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
