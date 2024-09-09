@@ -134,7 +134,7 @@ public class BuildTask extends ChunkTask {
                         bufferBuilder.setBlockAttributes(blockState);
 
                         pos.set(blockPos.getX() & 15, blockPos.getY() & 15, blockPos.getZ() & 15);
-                        blockRenderer.renderBatched(blockState, blockPos, pos, bufferBuilder);
+                        blockRenderer.renderBlock(blockState, blockPos, pos, bufferBuilder);
                     }
                 }
             }
