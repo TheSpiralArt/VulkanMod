@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
@@ -104,7 +105,7 @@ public class VBO {
     }
 
     public void drawWithShader(Matrix4f MV, Matrix4f P, ShaderInstance shader) {
-        if (this.indexCount != 0) {
+        if (this.indexCount != 0 && Initializer.CONFIG.renderSky) {
             RenderSystem.assertOnRenderThread();
 
             RenderSystem.setShader(() -> shader);
