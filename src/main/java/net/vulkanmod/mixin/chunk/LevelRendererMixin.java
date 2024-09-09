@@ -27,6 +27,9 @@ import java.util.SortedSet;
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
 
+    @Shadow
+    protected abstract boolean shouldShowEntityOutlines();
+
     @Shadow @Final
     private RenderBuffers renderBuffers;
 
