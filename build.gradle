@@ -47,7 +47,7 @@ dependencies {
 	implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
 
 	ext.includeNatives = { name ->
-		implementation("$name:$lwjglVersion"))
+		implementation("$name:$lwjglVersion")
 		runtimeOnly("$name:$lwjglVersion:$winNatives")
 		runtimeOnly("$name:$lwjglVersion:$linuxNatives")
 		runtimeOnly("$name:$lwjglVersion:$macosNatives")
