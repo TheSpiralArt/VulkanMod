@@ -293,6 +293,14 @@ public abstract class Options {
                                 value -> config.entityOutline = value,
                                 () -> config.entityOutline)
                                 .setTooltip(Component.translatable("vulkanmod.options.entityOutline.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.colorClear"),
+                                value -> config.colorClear = value,
+                                () -> config.colorClear)
+                                .setTooltip(Component.translatable("vulkanmod.options.colorClear.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.depthClears"),
+                                value -> config.depthClears = value,
+                                () -> config.depthClears)
+                        .setTooltip(Component.translatable("vulkanmod.options.depthClears.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = drawIndirectSupported ? value : false,
                                     () -> drawIndirectSupported && config.indirectDraw)
