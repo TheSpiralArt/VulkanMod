@@ -753,8 +753,7 @@ public class Renderer {
         }
     }
 
-    public static void popDebugSec
-    tion() {
+    public static void popDebugSection() {
         if (Vulkan.ENABLE_VALIDATION_LAYERS) {
             VkCommandBuffer commandBuffer = INSTANCE.currentCmdBuffer;
 
