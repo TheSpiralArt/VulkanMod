@@ -188,7 +188,7 @@ public class VOptionScreen extends Screen {
         );
 
         buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + 10;
-        x0 = (this.width - buttonWidth - rightMargin);
+        x0 = (x0 - buttonWidth - 6);
         this.supportButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
