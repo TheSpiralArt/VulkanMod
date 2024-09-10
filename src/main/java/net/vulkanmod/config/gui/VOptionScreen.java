@@ -183,7 +183,7 @@ public class VOptionScreen extends Screen {
         this.patcherButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
-                "Patched by §eShadowMC69§r",
+                Component.literal("Patched by §eShadowMC69§r"),
                 button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
         );
 
