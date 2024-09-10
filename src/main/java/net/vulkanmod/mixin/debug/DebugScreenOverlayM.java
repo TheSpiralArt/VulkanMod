@@ -76,10 +76,13 @@ public abstract class DebugScreenOverlayM {
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
         if (CONFIG.showPojav) {
-            strings.add("");
-            strings.add("Running on Pojav: " + isRunningOnAndroid() ? "§aYes§r" : "§cNo§r");
-            if (isRunningOnAndroid()) {
-                strings.add("Using ASR: " + (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? "§aYes§r" : "§cNo§r");
+    strings.add("");
+    strings.add("Running on Pojav: " + (isRunningOnAndroid() ? "§aYes§r" : "§cNo§r"));
+    if (isRunningOnAndroid()) {
+        strings.add("Using ASR: " + ((pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || 
+                                      pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR || 
+                                      pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) 
+                                      ? "§aYes§r" : "§cNo§r"));
             }
         }
         
