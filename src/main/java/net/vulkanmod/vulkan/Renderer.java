@@ -652,7 +652,7 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
+            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, Math.abs(height));
             VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
             
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
@@ -700,7 +700,7 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-           VkExtent2D extent = VkExtent2D.malloc(stack);
+            VkExtent2D extent = VkExtent2D.malloc(stack);
             Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
             // Since our x and y are still in Minecraft's coordinate space, pre-transform the framebuffer's width and height to get expected results.
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
