@@ -198,13 +198,13 @@ public class VOptionScreen extends Screen {
 
         this.buttons.add(this.applyButton);
         this.buttons.add(this.doneButton);
-        this.buttons.add(this.supportButton);
         this.buttons.add(this.patcherButton);
+        this.buttons.add(this.supportButton);
 
         this.addWidget(this.applyButton);
         this.addWidget(this.doneButton);
-        this.addWidget(this.supportButton);
         this.addWidget(this.patcherButton);
+        this.addWidget(this.supportButton);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
