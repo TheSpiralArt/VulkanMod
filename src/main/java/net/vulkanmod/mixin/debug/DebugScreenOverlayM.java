@@ -23,6 +23,7 @@ import java.util.List;
 
 import static net.vulkanmod.Initializer.CONFIG;
 import static net.vulkanmod.Initializer.getVersion;
+import static org.lwjgl.vulkan.KHRSurface.*;
 
 @Mixin(DebugScreenOverlay.class)
 public abstract class DebugScreenOverlayM {
