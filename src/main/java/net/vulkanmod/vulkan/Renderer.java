@@ -711,6 +711,7 @@ public class Renderer {
                 VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
                 scissor.offset().set(x, framebufferHeight - (y + height));
                 scissor.extent().set(width, height);
+                vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
             } else {
                 VkExtent2D extent = VkExtent2D.malloc(stack);
                 Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
@@ -724,8 +725,9 @@ public class Renderer {
                 scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
                 // Reuse the extent to transform the scissor width/height
                 scissor.extent(transformToExtent(extent, width, height));
+                vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
             }
-            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
+            
         }
     }
 
