@@ -7,7 +7,9 @@ import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
+import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.memory.MemoryManager;
+import net.vulkanmod.vulkan.queue.Queue;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static net.vulkanmod.Initializer.CONFIG;
 import static net.vulkanmod.Initializer.getVersion;
 
 @Mixin(DebugScreenOverlay.class)
@@ -47,6 +50,7 @@ public abstract class DebugScreenOverlayM {
     private ArrayList<String> redirectList(Object[] elements) {
         ArrayList<String> strings = new ArrayList<>();
 
+        int pretransformFlags = Vulkan.getPretransformFlags();
         long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
         long freeMemory = Runtime.getRuntime().freeMemory();
@@ -65,141 +69,54 @@ public abstract class DebugScreenOverlayM {
         strings.add("CPU: " + SystemInfo.cpuInfo);
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
+        strings.add("Instance: " + device.vkInstanceLoaderVersion);
         strings.add("Vulkan: " + device.vkVersion);
         strings.add("");
-        strings.add("");
-
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
+        if (CONFIG.showPojav) {
+            strings.add("");
+            strings.add("Running on Pojav: " + isRunningOnAndroid() ? "§aYes§r" : "§cNo§r");
+            if (isRunningOnAndroid()) {
+                strings.add("Using ASR: " + (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? "§aYes§r" : "§cNo§r");
+            }
+        }
+        
+        if (CONFIG.showQueueFamily) {
+            strings.add("");
+            strings.add("Device Queue Families:");
+            strings.add("Graphics Queue: " + (Queue.graphicsSupported ? "§aSupported§r" : "§cUnsupported§r"));
+            strings.add("Present Queue: " + (Queue.presentFallback ? "§eFallback§r" : "§aSupported§r"));
+            strings.add("Transfer Queue: " + (Queue.transferFallback ? "§eFallback§r" : "§aSupported§r"));
+            strings.add("Compute Queue: " + (Queue.computeFallback ? "§eFallback§r" : "§aSupported§r"));
+        }
+    
+        if (isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
+            strings.add("");
+            strings.add("Device RAM Info:");
+            strings.add(DeviceRAMInfo.getMemoryInfo());
+            strings.add(DeviceRAMInfo.getAvailableMemoryInfo());
+            strings.add(DeviceRAMInfo.getCurrentUsage());
+            strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
+            strings.add(DeviceRAMInfo.getBuffersInfo());
+        }
+        
         return strings;
+    }
+
+    private static boolean isRunningOnAndroid() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return (osName.contains("linux") || osName.contains("android")) && (System.getenv("POJAV_ENVIRON") != null ||
+               System.getenv("SCL_ENVIRON") != null ||
+               System.getenv("POJAV_RENDERER") != null);
+    }
+
+    private static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
     }
 
     private long getOffHeapMemory() {
         return bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed());
     }
-
-//    /**
-//     * @author
-//     */
-//    @Overwrite
-//    public void drawGameInformation(PoseStack matrices) {
-//        List<String> list = this.getGameInformation();
-//        list.add("");
-//        boolean bl = this.minecraft.getSingleplayerServer() != null;
-//        list.add("Debug: Pie [shift]: " + (this.minecraft.options.renderDebugCharts ? "visible" : "hidden") + (bl ? " FPS + TPS" : " FPS") + " [alt]: " + (this.minecraft.options.renderFpsChart ? "visible" : "hidden"));
-//        list.add("For help: press F3 + Q");
-//
-//        RenderSystem.enableBlend();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        GuiBatchRenderer.beginBatch(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//
-//        for (int i = 0; i < list.size(); ++i) {
-//            String string = list.get(i);
-//            if (Strings.isNullOrEmpty(string)) continue;
-//            int j = this.font.lineHeight;
-//            int k = this.font.width(string);
-//            int l = 2;
-//            int m = 2 + j * i;
-//
-//            GuiBatchRenderer.fill(matrices, 1, m - 1, 2 + k + 1, m + j - 1, -1873784752);
-//        }
-//        GuiBatchRenderer.endBatch();
-//
-//        MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-//        for (int i = 0; i < list.size(); ++i) {
-//            String string = list.get(i);
-//            if (Strings.isNullOrEmpty(string)) continue;
-//            int j = this.font.lineHeight;
-//            int k = this.font.width(string);
-//            int l = 2;
-//            int m = 2 + j * i;
-//
-//            GuiBatchRenderer.drawString(this.font, bufferSource, matrices, string, 2.0f, (float)m, 0xE0E0E0);
-//        }
-//        bufferSource.endBatch();
-//    }
-
-//    @Inject(method = "drawGameInformation",
-//            at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z",
-//                    shift = At.Shift.AFTER,
-//                    ordinal = 2))
-//    protected void inject1(GuiGraphics guiGraphics, CallbackInfo ci)
-//    {
-//
-//        RenderSystem.enableBlend();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        GuiBatchRenderer.beginBatch(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//    }
-//
-//
-//    @Redirect(method = "renderLines",
-//            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V"))
-//    protected void redirectFill(GuiGraphics instance, int i, int j, int k, int l, int m)
-//    {
-//        GuiBatchRenderer.fill(instance.pose(), m, k, j, l, m);
-//    }
-//
-//    @Redirect(method = "drawGameInformation(Lcom/mojang/blaze3d/vertex/PoseStack;)V",
-//            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;draw(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/lang/String;FFI)I"))
-//    protected int renderStuffRedirectThree(Font instance, PoseStack $$0, String $$1, float $$2, float $$3, int $$4)
-//    {
-//        return 0;
-//    }
-//
-//    @Inject(method = "drawGameInformation(Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("TAIL"),
-//            locals = LocalCapture.CAPTURE_FAILHARD)
-//    public void renderStuff3(PoseStack poseStack, CallbackInfo ci, List<String> list)
-//    {
-//        GuiBatchRenderer.endBatch();
-//
-//        MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-//        for (int i = 0; i < list.size(); ++i) {
-//            String string = list.get(i);
-//            if (Strings.isNullOrEmpty(string)) continue;
-//            int j = this.font.lineHeight;
-//            int k = this.font.width(string);
-//            int l = 2;
-//            int m = 2 + j * i;
-//
-//            GuiBatchRenderer.drawString(this.font, bufferSource, poseStack, string, 2.0f, (float)m, 0xE0E0E0);
-//        }
-//        bufferSource.endBatch();
-//    }
-//
-//    /**
-//     * @author
-//     */
-//    @Overwrite
-//    public void drawSystemInformation(PoseStack matrices) {
-//        List<String> list = this.getSystemInformation();
-//
-//        RenderSystem.enableBlend();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        GuiBatchRenderer.beginBatch(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//
-//        for (int i = 0; i < list.size(); ++i) {
-//            String string = list.get(i);
-//            if (Strings.isNullOrEmpty(string)) continue;
-//            int j = this.font.lineHeight;
-//            int k = this.font.width(string);
-//            int l = this.minecraft.getWindow().getGuiScaledWidth() - 2 - k;
-//            int m = 2 + j * i;
-//
-//            GuiBatchRenderer.fill(matrices, l - 1, m - 1, l + k + 1, m + j - 1, -1873784752);
-//        }
-//        GuiBatchRenderer.endBatch();
-//
-//        MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-//        for (int i = 0; i < list.size(); ++i) {
-//            String string = list.get(i);
-//            if (Strings.isNullOrEmpty(string)) continue;
-//            int j = this.font.lineHeight;
-//            int k = this.font.width(string);
-//            int l = this.minecraft.getWindow().getGuiScaledWidth() - 2 - k;
-//            int m = 2 + j * i;
-//
-//            GuiBatchRenderer.drawString(this.font, bufferSource, matrices, string, (float)l, (float)m, 0xE0E0E0);
-//        }
-//        bufferSource.endBatch();
-//    }
 }
