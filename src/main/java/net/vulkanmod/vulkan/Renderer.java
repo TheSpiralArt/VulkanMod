@@ -652,8 +652,8 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, Math.abs(height));
-            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, Math.abs(height));
+            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
+            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
             
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
@@ -700,35 +700,19 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            int pretransformFlags = Vulkan.getPretransformFlags();
-            if(pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR ||
-                    pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
-                VkExtent2D extent = VkExtent2D.malloc(stack);
-                Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
-                // Since our x and y are still in Minecraft's coordinate space, pre-transform the framebuffer's width and height to get expected results.
-                transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
-                int framebufferHeight = extent.height();
+           VkExtent2D extent = VkExtent2D.malloc(stack);
+            Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
+            // Since our x and y are still in Minecraft's coordinate space, pre-transform the framebuffer's width and height to get expected results.
+            transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
+            int framebufferHeight = extent.height();
 
-                x = Math.max(0, x);
+            x = Math.max(0, x);
 
-                VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-                scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
-                // Reuse the extent to transform the scissor width/height
-                scissor.extent(transformToExtent(extent, width, height));
-                vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
-                
-            } else {
-                int framebufferHeight = INSTANCE.boundFramebuffer.getHeight();
-
-                x = Math.max(0, x);
-                
-                VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-                scissor.offset().set(x, framebufferHeight - (y + height));
-                scissor.extent().set(width, height);
-                vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
-                
-            }
-            
+            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+            scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
+            // Reuse the extent to transform the scissor width/height
+            scissor.extent(transformToExtent(extent, width, height));
+            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
     }
 
