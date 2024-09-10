@@ -34,6 +34,7 @@ public class VOptionScreen extends Screen {
     private int tooltipY;
     private int tooltipWidth;
 
+    private VButtonWidget patcherButton;
     private VButtonWidget supportButton;
 
     private VButtonWidget doneButton;
@@ -177,6 +178,15 @@ public class VOptionScreen extends Screen {
                 button -> this.applyOptions()
         );
 
+        buttonWidth = minecraft.font.width("Patched by §eShadowMC69§r") + 10;
+        x0 = (this.width - buttonWidth - rightMargin);
+        this.patcherButton = new VButtonWidget(
+                x0, 6,
+                buttonWidth, buttonHeight,
+                "Patched by §eShadowMC69§r",
+                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
+        );
+
         buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + 10;
         x0 = (this.width - buttonWidth - rightMargin);
         this.supportButton = new VButtonWidget(
@@ -189,10 +199,12 @@ public class VOptionScreen extends Screen {
         this.buttons.add(this.applyButton);
         this.buttons.add(this.doneButton);
         this.buttons.add(this.supportButton);
+        this.buttons.add(this.patcherButton);
 
         this.addWidget(this.applyButton);
         this.addWidget(this.doneButton);
         this.addWidget(this.supportButton);
+        this.addWidget(this.patcherButton);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
