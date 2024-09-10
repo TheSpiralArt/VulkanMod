@@ -706,7 +706,7 @@ public class Renderer {
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
 
-            // x = Math.max(0, x);
+            x = Math.max(0, x);
 
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
             scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
