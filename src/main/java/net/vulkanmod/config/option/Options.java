@@ -357,6 +357,10 @@ public abstract class Options {
                     value -> config.showQueueFamily = value,
                     () -> config.showQueueFamily)
                     .setTooltip(Component.translatable("vulkanmod.options.showQueueFamily.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showPojav"),
+                    value -> config.showPojav = value,
+                    () -> config.showPojav)
+                    .setTooltip(Component.translatable("vulkanmod.options.showPojav.tooltip")),
                         new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
