@@ -34,8 +34,8 @@ public class VOptionScreen extends Screen {
     private int tooltipY;
     private int tooltipWidth;
 
-    private VButtonWidget patcherButton;
     private VButtonWidget supportButton;
+    private VButtonWidget patcherButton;
 
     private VButtonWidget doneButton;
     private VButtonWidget applyButton;
@@ -178,22 +178,22 @@ public class VOptionScreen extends Screen {
                 button -> this.applyOptions()
         );
 
-        buttonWidth = minecraft.font.width("Patched by §eShadowMC69§r") + 10;
-        x0 = (this.width - buttonWidth - rightMargin);
-        this.patcherButton = new VButtonWidget(
-                x0, 6,
-                buttonWidth, buttonHeight,
-                Component.literal("Patched by §eShadowMC69§r"),
-                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
-        );
-
         buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + 10;
-        x0 = (x0 - buttonWidth - 6);
+        x0 = (this.width - buttonWidth - rightMargin);
         this.supportButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
                 Component.translatable("vulkanmod.options.buttons.kofi"),
                 button -> Util.getPlatform().openUri("https://ko-fi.com/xcollateral")
+        );
+
+        buttonWidth = minecraft.font.width("Patched by §eShadowMC69§r") + 10;
+        x0 = (x0 - buttonWidth - 6);
+        this.patcherButton = new VButtonWidget(
+                x0, 6,
+                buttonWidth, buttonHeight,
+                Component.literal("Patched by §eShadowMC69§r"),
+                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
         );
 
         this.buttons.add(this.applyButton);
