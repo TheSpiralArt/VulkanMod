@@ -542,8 +542,6 @@ public class Renderer {
     }
 
     public static void clearAttachments(int v) {
-        if (!Initializer.CONFIG.colorClear & (v & GL_COLOR_BUFFER_BIT) != 0) return;
-        if (!Initializer.CONFIG.depthClears & (v & GL_DEPTH_BUFFER_BIT) != 0) return;
         Framebuffer framebuffer = Renderer.getInstance().boundFramebuffer;
         if (framebuffer == null)
             return;
