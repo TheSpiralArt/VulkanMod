@@ -169,31 +169,31 @@ public class VOptionScreen extends Screen {
                 button -> this.minecraft.setScreen(this.parent)
         );
 
-        buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.apply")) + 2 * padding;
+        buttonWidth = minecraft.font.width(Component.translatable("\u0076\u0075\u006c\u006b\u0061\u006e\u006d\u006f\u0064\u002e\u006f\u0070\u0074\u0069\u006f\u006e\u0073\u002e\u0062\u0075\u0074\u0074\u006f\u006e\u0073\u002e\u0061\u0070\u0070\u006c\u0079")) + 2 * padding;
         x0 -= (buttonWidth + buttonMargin);
         this.applyButton = new VButtonWidget(
                 x0, y0,
                 buttonWidth, buttonHeight,
-                Component.translatable("vulkanmod.options.buttons.apply"),
+                Component.translatable("\u0076\u0075\u006c\u006b\u0061\u006e\u006d\u006f\u0064\u002e\u006f\u0070\u0074\u0069\u006f\u006e\u0073\u002e\u0062\u0075\u0074\u0074\u006f\u006e\u0073\u002e\u0061\u0070\u0070\u006c\u0079"),
                 button -> this.applyOptions()
         );
 
-        buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + 10;
+        buttonWidth = minecraft.font.width(Component.translatable("\u0076\u0075\u006c\u006b\u0061\u006e\u006d\u006f\u0064\u002e\u006f\u0070\u0074\u0069\u006f\u006e\u0073\u002e\u0062\u0075\u0074\u0074\u006f\u006e\u0073\u002e\u006b\u006f\u0066\u0069")) + 10;
         x0 = (this.width - buttonWidth - rightMargin);
         this.supportButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
-                Component.translatable("vulkanmod.options.buttons.kofi"),
-                button -> Util.getPlatform().openUri("https://ko-fi.com/xcollateral")
+                Component.translatable("\u0076\u0075\u006c\u006b\u0061\u006e\u006d\u006f\u0064\u002e\u006f\u0070\u0074\u0069\u006f\u006e\u0073\u002e\u0062\u0075\u0074\u0074\u006f\u006e\u0073\u002e\u006b\u006f\u0066\u0069"),
+                button -> Util.getPlatform().openUri("\u0068\u0074\u0074\u0070\u0073\u003a\u002f\u002f\u006b\u006f\u002d\u0066\u0069\u002e\u0063\u006f\u006d\u002f\u0078\u0063\u006f\u006c\u006c\u0061\u0074\u0065\u0072\u0061\u006c")
         );
 
-        buttonWidth = minecraft.font.width("Patched by §eShadowMC69§r") + 10;
+        buttonWidth = minecraft.font.width("\u0050\u0061\u0074\u0063\u0068\u0065\u0064\u0020\u0062\u0079\u0020\u00a7\u0065\u0053\u0068\u0061\u0064\u006f\u0077\u004d\u0043\u0036\u0039\u00a7\u0072") + 10;
         x0 = (x0 - buttonWidth - 6);
         this.patcherButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
-                Component.literal("Patched by §eShadowMC69§r"),
-                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
+                Component.literal("\u0050\u0061\u0074\u0063\u0068\u0065\u0064\u0020\u0062\u0079\u0020\u00a7\u0065\u0053\u0068\u0061\u0064\u006f\u0077\u004d\u0043\u0036\u0039\u00a7\u0072"),
+                button -> Util.getPlatform().openUri("\u0068\u0074\u0074\u0070\u0073\u003a\u002f\u002f\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002e\u0063\u006f\u006d\u002f\u0063\u0068\u0061\u006e\u006e\u0065\u006c\u002f\u0055\u0043\u0064\u006f\u004e\u0031\u006b\u0072\u0067\u006e\u0079\u0064\u0063\u0079\u007a\u0071\u0067\u0052\u0045\u006a\u0066\u0044\u007a\u0051")
         );
 
         this.buttons.add(this.applyButton);
