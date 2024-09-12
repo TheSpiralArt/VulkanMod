@@ -1,8 +1,8 @@
 package net.vulkanmod.vulkan;
 
+import oshi.SystemInfo as OshiSystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.Processor;
-import oshi.SystemInfo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,7 +30,7 @@ public class SystemInfo {
 
     public static String getProcessorNameForDesktop() {
         try {
-            SystemInfo oshiSystemInfo = new SystemInfo();
+            OshiSystemInfo oshiSystemInfo = new OshiSystemInfo();
             HardwareAbstractionLayer hal = oshiSystemInfo.getHardware();
             Processor processor = hal.getProcessor();
             return processor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
