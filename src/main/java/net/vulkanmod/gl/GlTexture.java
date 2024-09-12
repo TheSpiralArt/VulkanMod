@@ -111,7 +111,7 @@ public class GlTexture {
 
         switch (pName) {
             case GL30.GL_TEXTURE_MAX_LEVEL -> boundTexture.setMaxLevel(param);
-            case GL30.GL_TEXTURE_MAX_LOD -> {};
+            case GL30.GL_TEXTURE_MAX_LOD -> {}
             case GL30.GL_TEXTURE_MIN_LOD -> {}
             case GL30.GL_TEXTURE_LOD_BIAS -> {}
 
