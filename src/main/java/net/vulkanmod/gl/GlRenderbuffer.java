@@ -64,7 +64,7 @@ public class GlRenderbuffer {
 
         switch (pName) {
             case GL30.GL_TEXTURE_MAX_LEVEL -> bound.setMaxLevel(param);
-            case GL30.GL_TEXTURE_MAX_LOD -> bound.setMaxLod(param);
+            case GL30.GL_TEXTURE_MAX_LOD -> {};
             case GL30.GL_TEXTURE_MIN_LOD -> {}
             case GL30.GL_TEXTURE_LOD_BIAS -> {}
 
@@ -114,7 +114,6 @@ public class GlRenderbuffer {
 
     boolean needsUpdate = false;
     int maxLevel = 0;
-    int maxLod = 0;
     int minFilter, magFilter = GL11.GL_LINEAR;
 
     public GlRenderbuffer(int id) {
@@ -196,16 +195,6 @@ public class GlRenderbuffer {
         if (maxLevel != l) {
             maxLevel = l;
             needsUpdate = true;
-        }
-    }
-
-    void setMaxLod(int l) {
-        if (l < 0)
-            throw new IllegalStateException("max level cannot be < 0.");
-
-        if (maxLod != l) {
-            maxLod = l;
-            updateSampler();
         }
     }
 
