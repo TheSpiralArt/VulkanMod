@@ -1,8 +1,8 @@
 package net.vulkanmod.vulkan;
 
-import oshi.hardware.CentralProcessor;
-import oshi.software.os.linux.LinuxOperatingSystem;
-import oshi.software.os.OperatingSystem;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.Processor;
+import oshi.SystemInfo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,15 +30,11 @@ public class SystemInfo {
 
     public static String getProcessorNameForDesktop() {
         try {
-            return new oshi.SystemInfo().getHardware().getProcessor().getProcessorIdentifier().getName().replaceAll("\\s+", " ");
-        } catch (NoClassDefFoundError e) {
-            try {
-                OperatingSystem os = new LinuxOperatingSystem();
-                return os.getSystemInfo().getHardware().getProcessor().getProcessorIdentifier().getName().replaceAll("\\s+", " ");
-            } catch (Exception ex) {
-                return getProcessorNameForAndroid();
-            }
-        } catch (Exception e) {
+            SystemInfo oshiSystemInfo = new SystemInfo();
+            HardwareAbstractionLayer hal = oshiSystemInfo.getHardware();
+            Processor processor = hal.getProcessor();
+            return processor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
+        } catch (NoClassDefFoundError | Exception e) {
             return getProcessorNameForAndroid();
         }
     }
