@@ -81,7 +81,6 @@ public class GraphicsPipeline extends Pipeline {
             vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
             vertShaderStageInfo.module(vertShaderModule);
             vertShaderStageInfo.pName(entryPoint);
-            fragShaderStageInfo.pSpecializationInfo(specInfo);
 
             VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(1);
 
@@ -89,6 +88,7 @@ public class GraphicsPipeline extends Pipeline {
             fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
             fragShaderStageInfo.module(fragShaderModule);
             fragShaderStageInfo.pName(entryPoint);
+            fragShaderStageInfo.pSpecializationInfo(specInfo);
 
             // ===> VERTEX STAGE <===
 
