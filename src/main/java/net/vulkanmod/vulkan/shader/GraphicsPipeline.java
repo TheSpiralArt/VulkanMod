@@ -14,6 +14,7 @@ import org.lwjgl.vulkan.*;
 
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.EnumSet;
 import java.util.List;
 
 import static org.lwjgl.system.MemoryStack.stackGet;
@@ -25,9 +26,10 @@ public class GraphicsPipeline extends Pipeline {
     private final Object2LongMap<PipelineState> graphicsPipelines = new Object2LongOpenHashMap<>();
 
     private final VertexFormat vertexFormat;
+    private final EnumSet<SPIRVUtils.SpecConstant> specConstants;
 
-    private long vertShaderModule = 0;
-    private long fragShaderModule = 0;
+    private final long vertShaderModule;
+    private final long fragShaderModule;
 
     GraphicsPipeline(Builder builder) {
         super(builder.shaderPath);
@@ -39,7 +41,10 @@ public class GraphicsPipeline extends Pipeline {
 
         createDescriptorSetLayout();
         createPipelineLayout();
-        createShaderModules(builder.vertShaderSPIRV, builder.fragShaderSPIRV);
+
+        this.specConstants = builder.specConstants;
+        this.vertShaderModule = createShaderModule(builder.vertShaderSPIRV.bytecode());
+        this.fragShaderModule = createShaderModule(builder.fragShaderSPIRV.bytecode());
 
         if (builder.renderPass != null)
             graphicsPipelines.computeIfAbsent(PipelineState.DEFAULT,
@@ -62,12 +67,21 @@ public class GraphicsPipeline extends Pipeline {
 
             VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.calloc(2, stack);
 
+            VkSpecializationMapEntry.Buffer specEntrySet =  VkSpecializationMapEntry.malloc(specConstants.size(), stack);
+
+
+            boolean equals = !this.specConstants.isEmpty();
+            VkSpecializationInfo specInfo = equals ? VkSpecializationInfo.malloc(stack)
+                    .pMapEntries(specEntrySet)
+                    .pData(enumSpecConstants(stack, specEntrySet)) : null;
+            
             VkPipelineShaderStageCreateInfo vertShaderStageInfo = shaderStages.get(0);
 
             vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
             vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
             vertShaderStageInfo.module(vertShaderModule);
             vertShaderStageInfo.pName(entryPoint);
+            fragShaderStageInfo.pSpecializationInfo(specInfo);
 
             VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(1);
 
@@ -205,9 +219,21 @@ public class GraphicsPipeline extends Pipeline {
         }
     }
 
-    private void createShaderModules(SPIRVUtils.SPIRV vertSpirv, SPIRVUtils.SPIRV fragSpirv) {
-        this.vertShaderModule = createShaderModule(vertSpirv.bytecode());
-        this.fragShaderModule = createShaderModule(fragSpirv.bytecode());
+    private ByteBuffer enumSpecConstants(MemoryStack stack, VkSpecializationMapEntry.Buffer specEntrySet) {
+        int i = 0, offset = 0;
+        ByteBuffer byteBuffer = stack.malloc(specConstants.size()*Integer.BYTES);
+
+        for(var specDef : specConstants)
+        {
+            specEntrySet.get(i)
+                    .constantID(specDef.ordinal())
+                    .offset(offset)
+                    .size(4);
+
+            byteBuffer.putInt(i, specDef.getValue());
+            i++; offset+=4;
+        }
+        return byteBuffer;
     }
 
     private static VkVertexInputBindingDescription.Buffer getBindingDescription(VertexFormat vertexFormat) {
