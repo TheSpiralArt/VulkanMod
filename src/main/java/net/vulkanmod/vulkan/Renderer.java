@@ -41,6 +41,7 @@ import static com.mojang.blaze3d.platform.GlConst.GL_DEPTH_BUFFER_BIT;
 import static net.vulkanmod.vulkan.Vulkan.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
+import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
@@ -623,9 +624,47 @@ public class Renderer {
         }
     }
 
+    private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
+        int pretransformFlags = Vulkan.getPretransformFlags();
+        Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
+        int framebufferWidth = boundFramebuffer.getWidth();
+        int framebufferHeight = boundFramebuffer.getHeight();
+        switch (pretransformFlags) {
+            case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
+                offset2D.x(framebufferWidth - h - y);
+                offset2D.y(x);
+            }
+            case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
+                offset2D.x(framebufferWidth - w - x);
+                offset2D.y(framebufferHeight - h - y);
+            }
+            case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
+                offset2D.x(y);
+                offset2D.y(framebufferHeight - w - x);
+            }
+            default -> {
+                offset2D.set(x, y);
+            }
+        }
+        return offset2D;
+    }
+
+    private static VkExtent2D transformToExtent(VkExtent2D extent2D, int w, int h) {
+        int pretransformFlags = Vulkan.getPretransformFlags();
+        return pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR ? extent2D.set(h, w) : extent2D.set(w, h);
+    }
+
     public static void setViewport(int x, int y, int width, int height, MemoryStack stack) {
         if (!INSTANCE.recordingCmds)
             return;
+
+        VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
+        VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
+
+        x = transformedOffset.x();
+        y = transformedOffset.y();
+        width = transformedExtent.width();
+        height = transformedExtent.height();
 
         VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
         viewport.x(x);
@@ -660,14 +699,16 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            int framebufferHeight = INSTANCE.boundFramebuffer.getHeight();
+            VkExtent2D extent = VkExtent2D.malloc(stack);
+            Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
+            transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
+            int framebufferHeight = extent.height();
 
             x = Math.max(0, x);
 
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            scissor.offset().set(x, framebufferHeight - (y + height));
-            scissor.extent().set(width, height);
-
+            scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
+            scissor.extent(transformToExtent(extent, width, height));
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
     }
