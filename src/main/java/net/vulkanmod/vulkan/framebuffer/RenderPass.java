@@ -235,7 +235,7 @@ public class RenderPass {
 
         if(!Vulkan.DYNAMIC_RENDERING)
             MemoryManager.getInstance().addFrameOp(
-                    () -> vkDestroyRenderPass(Vulkan.getDevice(), this.id, null));
+                    () -> vkDestroyRenderPass(Vulkan.getVkDevice(), this.id, null));
 
     }
 
