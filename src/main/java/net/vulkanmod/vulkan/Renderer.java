@@ -21,6 +21,7 @@ import net.vulkanmod.vulkan.shader.Pipeline;
 import net.vulkanmod.vulkan.shader.PipelineState;
 import net.vulkanmod.vulkan.shader.Uniforms;
 import net.vulkanmod.vulkan.shader.layout.PushConstants;
+import net.vulkanmod.vulkan.texture.SamplerManager;
 import net.vulkanmod.vulkan.texture.VTextureSelector;
 import net.vulkanmod.vulkan.util.VUtil;
 import net.vulkanmod.vulkan.util.VkResult;
@@ -465,6 +466,8 @@ public class Renderer {
 
         PipelineManager.destroyPipelines();
         VTextureSelector.getWhiteTexture().free();
+        SamplerManager.cleanUp();
+        
     }
 
     private void destroySyncObjects() {
@@ -652,7 +655,7 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, Math.abs(height));
+            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
             VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
             
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
@@ -702,7 +705,6 @@ public class Renderer {
         try (MemoryStack stack = stackPush()) {
             VkExtent2D extent = VkExtent2D.malloc(stack);
             Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
-            // Since our x and y are still in Minecraft's coordinate space, pre-transform the framebuffer's width and height to get expected results.
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
 
@@ -710,7 +712,6 @@ public class Renderer {
 
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
             scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
-            // Reuse the extent to transform the scissor width/height
             scissor.extent(transformToExtent(extent, width, height));
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
