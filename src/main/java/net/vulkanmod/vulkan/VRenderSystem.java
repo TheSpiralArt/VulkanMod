@@ -14,6 +14,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import static org.lwjgl.opengl.GL11C.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.*;
 
 import java.nio.ByteBuffer;
@@ -35,12 +36,14 @@ public abstract class VRenderSystem {
 
     public static boolean cull = true;
 
+    private static boolean allowFullColorClear = false;
     public static boolean logicOp = false;
     public static int logicOpFun = 0;
 
     public static float clearDepthValue = DEFAULT_DEPTH_VALUE;
     public static FloatBuffer clearColor = MemoryUtil.memCallocFloat(4);
 
+    private static final float[] checkedClearColor = new float[4];
     public static MappedBuffer modelViewMatrix = new MappedBuffer(16 * 4);
     public static MappedBuffer projectionMatrix = new MappedBuffer(16 * 4);
     public static MappedBuffer TextureMatrix = new MappedBuffer(16 * 4);
@@ -95,7 +98,6 @@ public abstract class VRenderSystem {
 
     public static void applyModelViewMatrix(Matrix4f mat) {
         mat.get(modelViewMatrix.buffer.asFloatBuffer());
-        //MemoryUtil.memPutFloat(MemoryUtil.memAddress(modelViewMatrix), 1);
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
@@ -110,6 +112,7 @@ public abstract class VRenderSystem {
         } else {
         	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
         }
+        //MemoryUtil.memPutFloat(MemoryUtil.memAddress(modelViewMatrix), 1);
     }
 
     public static void calculateMVP() {
@@ -163,11 +166,22 @@ public abstract class VRenderSystem {
     }
 
     public static void setClearColor(float f1, float f2, float f3, float f4) {
+        //set to true if different color
+        if(!(allowFullColorClear = checkClearColor(f1, f2, f3, f4))) return;
         ColorUtil.setRGBA_Buffer(clearColor, f1, f2, f3, f4);
+        checkedClearColor[0]=f1;
+        checkedClearColor[1]=f2;
+        checkedClearColor[2]=f3;
+        checkedClearColor[3]=f4;
+    }
+
+    private static boolean checkClearColor(float f0, float f1, float f2, float f3) {
+        return checkedClearColor[0] !=f0 | checkedClearColor[1] !=f1 | checkedClearColor[2] !=f2 | checkedClearColor[3] != f3;
     }
 
     public static void clear(int mask) {
-        Renderer.clearAttachments(mask);
+        Renderer.clearAttachments(allowFullColorClear ? mask : GL_DEPTH_BUFFER_BIT); //Depth Only Clears needed to fix Chat + Command Elements
+        allowFullColorClear = false;
     }
 
     public static void clearDepth(double depth) {
