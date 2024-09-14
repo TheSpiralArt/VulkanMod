@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.*;
@@ -65,6 +66,11 @@ public abstract class LevelRendererMixin {
     @Overwrite
     private void setupRender(Camera camera, Frustum frustum, boolean isCapturedFrustum, boolean spectator) {
         this.worldRenderer.setupRenderer(camera, frustum, isCapturedFrustum, spectator);
+    }
+
+    @Overwrite
+    public boolean shouldShowEntityOutlines() {
+        return Initializer.CONFIG.entityOutline;
     }
 
     /**
