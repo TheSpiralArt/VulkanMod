@@ -17,7 +17,6 @@ public class ChunkArea {
 
     DrawBuffers drawBuffers;
 
-    //Help JIT optimisations by hardcoding the queue size to the max possible ChunkArea limit
     public final StaticQueue<RenderSection> sectionQueue = new StaticQueue<>(512);
 
     public ChunkArea(int i, Vector3i origin, int minHeight) {
@@ -27,67 +26,61 @@ public class ChunkArea {
     }
 
     public void updateFrustum(VFrustum frustum) {
-        //TODO: maybe move to an aux class
-        int frustumResult = frustum.cubeInFrustum(this.position.x(), this.position.y(), this.position.z(),
-                this.position.x() + (8 << 4) , this.position.y() + (8 << 4), this.position.z() + (8 << 4));
+        final int width = 8 << 4;
+        final int halfWidth = width >> 1;
+        final int quarterWidth = width >> 2;
+        final float posX = this.position.x();
+        final float posY = this.position.y();
+        final float posZ = this.position.z();
 
-        //Inner cubes
+        int frustumResult = frustum.cubeInFrustum(posX, posY, posZ, posX + width, posY + width, posZ + width);
+
         if (frustumResult == FrustumIntersection.INTERSECT) {
-            int width = 8 << 4;
-            int l = width >> 1;
+            for (int x1 = 0; x1 < 2; x1++) {
+                float xMin = posX + x1 * halfWidth;
+                float xMax = xMin + halfWidth;
 
-            for(int x1 = 0; x1 < 2; x1++) {
-                float xMin = this.position.x() + (x1 * l);
-                float xMax = xMin + l;
-                for(int y1 = 0; y1 < 2; y1++) {
-                    float yMin = this.position.y() + (y1 * l);
-                    float yMax = yMin + l;
+                for (int y1 = 0; y1 < 2; y1++) {
+                    float yMin = posY + y1 * halfWidth;
+                    float yMax = yMin + halfWidth;
+
                     for (int z1 = 0; z1 < 2; z1++) {
-                        float zMin = this.position.z() + (z1 * l);
-                        float zMax = zMin + l;
+                        float zMin = posZ + z1 * halfWidth;
+                        float zMax = zMin + halfWidth;
 
-                        frustumResult = frustum.cubeInFrustum(xMin, yMin, zMin,
-                                xMax , yMax, zMax);
+                        frustumResult = frustum.cubeInFrustum(xMin, yMin, zMin, xMax, yMax, zMax);
 
                         int beginIdx = (x1 << 5) + (y1 << 4) + (z1 << 3);
-                        if (frustumResult == FrustumIntersection.INTERSECT) {
-                            int l2 = width >> 2;
-                            for (int x2 = 0; x2 < 2; x2++) {
-                                float xMin2 = xMin + x2 * l2;
-                                float xMax2 = xMin2 + l2;
-                                for (int y2 = 0; y2 < 2; y2++) {
-                                    float yMin2 = yMin + y2 * l2;
-                                    float yMax2 = yMin2 + l2;
-                                    for (int z2 = 0; z2 < 2; z2++) {
-                                        float zMin2 = zMin + z2 * l2;
-                                        float zMax2 = zMin2 + l2;
 
-                                        frustumResult = frustum.cubeInFrustum(xMin2, yMin2, zMin2,
-                                                xMax2, yMax2, zMax2);
+                        if (frustumResult == FrustumIntersection.INTERSECT) {
+                            for (int x2 = 0; x2 < 2; x2++) {
+                                float xMin2 = xMin + x2 * quarterWidth;
+                                float xMax2 = xMin2 + quarterWidth;
+
+                                for (int y2 = 0; y2 < 2; y2++) {
+                                    float yMin2 = yMin + y2 * quarterWidth;
+                                    float yMax2 = yMin2 + quarterWidth;
+
+                                    for (int z2 = 0; z2 < 2; z2++) {
+                                        float zMin2 = zMin + z2 * quarterWidth;
+                                        float zMax2 = zMin2 + quarterWidth;
+
+                                        frustumResult = frustum.cubeInFrustum(xMin2, yMin2, zMin2, xMax2, yMax2, zMax2);
 
                                         int idx = beginIdx + (x2 << 2) + (y2 << 1) + z2;
-
                                         this.frustumBuffer[idx] = (byte) frustumResult;
                                     }
-
                                 }
                             }
+                        } else {
+                            Arrays.fill(this.frustumBuffer, beginIdx, beginIdx + 8, (byte) frustumResult);
                         }
-                        else {
-                            int end = beginIdx + 8;
-
-                            for(int i = beginIdx; i < end; ++i) {
-                                this.frustumBuffer[i] = (byte) frustumResult;
-                            }
-                        }
-
                     }
                 }
             }
         } else {
-            Arrays.fill(frustumBuffer, (byte) frustumResult);
+            Arrays.fill(this.frustumBuffer, (byte) frustumResult);
         }
-
     }
 
     public byte getFrustumIndex(BlockPos pos) {
@@ -100,8 +93,8 @@ public class ChunkArea {
         int dz = z - this.position.z;
 
         int i = ((dx >> 1) & 0b100_000)
-                + ((dy >> 2) & 0b10_000)
-                + ((dz >> 3) & 0b1_000);
+            + ((dy >> 2) & 0b10_000)
+            + ((dz >> 3) & 0b1_000);
 
         int xSub = (dx >> 3) & 0b100;
         int ySub = (dy >> 4) & 0b10;
