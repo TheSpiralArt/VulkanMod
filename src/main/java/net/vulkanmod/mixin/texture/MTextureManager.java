@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Set;
 
+import static net.vulkanmod.Initializer.CONFIG;
+
 @Mixin(TextureManager.class)
 public abstract class MTextureManager {
 
@@ -22,7 +24,7 @@ public abstract class MTextureManager {
      */
     @Overwrite
     public void tick() {
-        if (Renderer.skipRendering)
+        if (Renderer.skipRendering || !CONFIG.animations)
             return;
 
         //Debug D
