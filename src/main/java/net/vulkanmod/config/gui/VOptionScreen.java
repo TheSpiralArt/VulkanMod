@@ -25,34 +25,27 @@ public class VOptionScreen extends Screen {
     final ResourceLocation ICON = ResourceLocation.fromNamespaceAndPath("vulkanmod", "vlogo_transparent.png");
 
     private final Screen parent;
-
     private final List<OptionPage> optionPages;
-
     private int currentListIdx = 0;
-
     private int tooltipX;
     private int tooltipY;
     private int tooltipWidth;
 
     private VButtonWidget patcherButton;
     private VButtonWidget supportButton;
-
     private VButtonWidget doneButton;
     private VButtonWidget applyButton;
-
     private final List<VButtonWidget> pageButtons = Lists.newArrayList();
     private final List<VButtonWidget> buttons = Lists.newArrayList();
 
     public VOptionScreen(Component title, Screen parent) {
         super(title);
         this.parent = parent;
-
         this.optionPages = new ArrayList<>();
     }
 
     private void addPages() {
         this.optionPages.clear();
-
         OptionPage page = new OptionPage(
                 Component.translatable("vulkanmod.options.pages.video").getString(),
                 Options.getVideoOpts()
@@ -107,8 +100,10 @@ public class VOptionScreen extends Screen {
         this.tooltipWidth = width;
 
         buildPage();
-
         this.applyButton.active = false;
+
+        checkSupportButtonText();
+        checkPatcherButtonText();
     }
 
     private void buildLists(int left, int top, int listWidth, int listHeight, int itemHeight) {
@@ -175,27 +170,22 @@ public class VOptionScreen extends Screen {
                 button -> this.applyOptions()
         );
 
-        String kofiTranslation = Component.translatable("vulkanmod.options.buttons.kofi").getString();
-        if (!kofiTranslation.contains("Support me")) {
-            System.exit(0);
-        }
-
-        buttonWidth = minecraft.font.width("Patched by §eShadowMC69§r") + 10;
-        x0 = (this.width - buttonWidth - rightMargin);
-        this.patcherButton = new VButtonWidget(
-                x0, 6,
-                buttonWidth, buttonHeight,
-                Component.literal("Patched by §eShadowMC69§r"),
-                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
-        );
-
         buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + 10;
-        x0 = (x0 - buttonWidth - 6);
+        x0 = (this.width - buttonWidth - rightMargin);
         this.supportButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
                 Component.translatable("vulkanmod.options.buttons.kofi"),
                 button -> Util.getPlatform().openUri("https://ko-fi.com/xcollateral")
+        );
+
+        buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.patched_by")) + 10;
+        x0 = (x0 - buttonWidth - 6);
+        this.patcherButton = new VButtonWidget(
+                x0, 6,
+                buttonWidth, buttonHeight,
+                Component.translatable("vulkanmod.options.buttons.patched_by"),
+                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
         );
 
         this.buttons.add(this.applyButton);
@@ -209,6 +199,20 @@ public class VOptionScreen extends Screen {
         this.addWidget(this.supportButton);
     }
 
+    private void checkSupportButtonText() {
+        String supportText = Component.translatable("vulkanmod.options.buttons.kofi").getString();
+        if (!(supportText.contains("Support me") || supportText.contains("Поддержите нас"))) {
+            System.exit(0);
+        }
+    }
+
+    private void checkPatcherButtonText() {
+        String patcherText = Component.translatable("vulkanmod.options.buttons.patched_by").getString();
+        if (!(patcherText.contains("Patched by §eShadowMC69§r") || patcherText.contains("Исправлено §eShadowMC69§r"))) {
+            System.exit(0);
+        }
+    }
+
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (GuiEventListener element : this.children()) {
             if (element.mouseClicked(mouseX, mouseY, button)) {
@@ -216,12 +220,10 @@ public class VOptionScreen extends Screen {
                 if (button == 0) {
                     this.setDragging(true);
                 }
-
                 this.updateState();
                 return true;
             }
         }
-
         return false;
     }
 
@@ -244,7 +246,6 @@ public class VOptionScreen extends Screen {
         if (this.minecraft.level == null) {
             this.renderPanorama(guiGraphics, f);
         }
-
         this.renderBlurredBackground(f);
         this.renderMenuBackground(guiGraphics);
     }
@@ -286,7 +287,6 @@ public class VOptionScreen extends Screen {
         float intensity = 0.05f;
         int color = ColorUtil.ARGB.pack(intensity, intensity, intensity, 0.6f);
         GuiRenderer.fill(x - padding, y - padding, x + width + padding, y + height + padding, color);
-
         color = RED;
         GuiRenderer.renderBorder(x - padding, y - padding, x + width + padding, y + height + padding, 1, color);
 
@@ -320,9 +320,7 @@ public class VOptionScreen extends Screen {
 
     private void setOptionList(int i) {
         this.currentListIdx = i;
-
         this.buildPage();
-
         this.pageButtons.get(i).setSelected(true);
     }
 
@@ -331,7 +329,6 @@ public class VOptionScreen extends Screen {
         for (var page : pages) {
             page.applyOptionChanges();
         }
-
         Initializer.CONFIG.write();
     }
 }
