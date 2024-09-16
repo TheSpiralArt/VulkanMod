@@ -22,7 +22,10 @@ public class Initializer implements ClientModInitializer {
     private static String VERSION;
     public static Config CONFIG;
 
-    private static final String EXPECTED_MD5 = "4a1524427beb0511477ec2f27b6bc7cb";
+    private static final String EXPECTED_MOD_MD5 = "4a1524427beb0511477ec2f27b6bc7cb";
+
+    private static final String EXPECTED_EN_US_MD5 = "dec26311b917326c7d977f90cb5735af";
+    private static final String EXPECTED_RU_RU_MD5 = "4011a626ad95746d887e75557c3d335f";
 
     @Override
     public void onInitializeClient() {
@@ -32,7 +35,15 @@ public class Initializer implements ClientModInitializer {
                 .getMetadata()
                 .getVersion().getFriendlyString();
 
-        if (checkModFileSizeAndHash("fabric.mod.json")) {
+        if (checkModFileSizeAndHash("fabric.mod.json", EXPECTED_MOD_MD5)) {
+            System.exit(1);
+        }
+
+        if (checkLangFileHash("assets/vulkanmod/lang/en_us.json", EXPECTED_EN_US_MD5)) {
+            System.exit(1);
+        }
+
+        if (checkLangFileHash("assets/vulkanmod/lang/ru_ru.json", EXPECTED_RU_RU_MD5)) {
             System.exit(1);
         }
 
@@ -48,7 +59,7 @@ public class Initializer implements ClientModInitializer {
         CONFIG = loadConfig(configPath);
     }
 
-    private static boolean checkModFileSizeAndHash(String fileName) {
+    private static boolean checkModFileSizeAndHash(String fileName, String expectedMD5) {
         Optional<Path> modFile = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .map(container -> container.findPath(fileName).orElse(null));
@@ -63,7 +74,29 @@ public class Initializer implements ClientModInitializer {
 
                 String fileMD5 = computeMD5(modFile.get());
 
-                if (!EXPECTED_MD5.equalsIgnoreCase(fileMD5)) {
+                if (!expectedMD5.equalsIgnoreCase(fileMD5)) {
+                    return true;
+                }
+
+                return false;
+            } catch (IOException | NoSuchAlgorithmException e) {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    private static boolean checkLangFileHash(String filePath, String expectedMD5) {
+        Optional<Path> langFile = FabricLoader.getInstance()
+                .getModContainer("vulkanmod")
+                .map(container -> container.findPath(filePath).orElse(null));
+
+        if (langFile.isPresent()) {
+            try {
+                String fileMD5 = computeMD5(langFile.get());
+
+                if (!expectedMD5.equalsIgnoreCase(fileMD5)) {
                     return true;
                 }
 
