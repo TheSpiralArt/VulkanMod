@@ -8,13 +8,10 @@ import net.vulkanmod.config.video.VideoModeManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.Objects;
 
 public class Initializer implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("VulkanMod");
@@ -56,13 +53,11 @@ public class Initializer implements ClientModInitializer {
             }
 
             long fileSize = getFileSize(inputStream);
-            if (fileSize < SIZE_THRESHOLD) {
-                return true;
-            }
+            return fileSize < SIZE_THRESHOLD;
         } catch (IOException e) {
             LOGGER.error("Error checking file size: ", e);
+            return false;
         }
-        return false;
     }
 
     private static long getFileSize(InputStream inputStream) throws IOException {
@@ -72,6 +67,7 @@ public class Initializer implements ClientModInitializer {
         while ((length = inputStream.read(data, 0, data.length)) != -1) {
             buffer.write(data, 0, length);
         }
+        buffer.flush();
         return buffer.size();
     }
 
