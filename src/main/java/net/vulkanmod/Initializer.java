@@ -11,14 +11,18 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 public class Initializer implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("VulkanMod");
 
-    private static final int SIZE_THRESHOLD = 4 * 1024; // 4 KB in bytes
+    private static final int SIZE_THRESHOLD = 10 * 1024;
     private static String VERSION;
     public static Config CONFIG;
+
+    private static final String EXPECTED_MD5 = "fec4306000ffaa482d6427e207d42573";
 
     @Override
     public void onInitializeClient() {
@@ -33,8 +37,8 @@ public class Initializer implements ClientModInitializer {
         Platform.init();
         VideoModeManager.init();
 
-        if (checkModFileSize("fabric.mod.json")) {
-            LOGGER.info("fabric.mod.json file size is below the threshold.");
+        if (checkModFileSizeAndHash("fabric.mod.json")) {
+            LOGGER.info("fabric.mod.json file size is below the threshold or MD5 doesn't match.");
             System.exit(1);
         }
 
@@ -45,7 +49,7 @@ public class Initializer implements ClientModInitializer {
         CONFIG = loadConfig(configPath);
     }
 
-    private static boolean checkModFileSize(String fileName) {
+    private static boolean checkModFileSizeAndHash(String fileName) {
         Optional<Path> modFile = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .map(container -> container.findPath(fileName).orElse(null));
@@ -54,15 +58,40 @@ public class Initializer implements ClientModInitializer {
             try {
                 long fileSize = Files.size(modFile.get());
                 LOGGER.info("File size of " + fileName + ": " + fileSize + " bytes");
-                return fileSize < SIZE_THRESHOLD;
-            } catch (IOException e) {
-                LOGGER.error("Error checking file size: ", e);
+
+                if (fileSize < SIZE_THRESHOLD) {
+                    return true;
+                }
+
+                String fileMD5 = computeMD5(modFile.get());
+                LOGGER.info("Computed MD5: " + fileMD5);
+
+                if (!EXPECTED_MD5.equalsIgnoreCase(fileMD5)) {
+                    LOGGER.info("MD5 hash does not match.");
+                    return true;
+                }
+
                 return false;
+            } catch (IOException | NoSuchAlgorithmException e) {
+                LOGGER.error("Error checking file size or computing MD5: ", e);
+                return true;
             }
         } else {
             LOGGER.error(fileName + " not found in the mod.");
-            return false;
+            return true;
         }
+    }
+
+    private static String computeMD5(Path path) throws IOException, NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] fileBytes = Files.readAllBytes(path);
+        byte[] hashBytes = md.digest(fileBytes);
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
     private static Config loadConfig(Path path) {
@@ -79,4 +108,4 @@ public class Initializer implements ClientModInitializer {
     public static String getVersion() {
         return VERSION;
     }
-}
+    }
