@@ -22,7 +22,7 @@ public class Initializer implements ClientModInitializer {
     private static String VERSION;
     public static Config CONFIG;
 
-    private static final String EXPECTED_MD5 = "fec4306000ffaa482d6427e207d42573";
+    private static final String EXPECTED_MD5 = "4a1524427beb0511477ec2f27b6bc7cb";
 
     @Override
     public void onInitializeClient() {
@@ -108,4 +108,4 @@ public class Initializer implements ClientModInitializer {
     public static String getVersion() {
         return VERSION;
     }
-    }
+}
