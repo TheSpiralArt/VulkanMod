@@ -32,15 +32,14 @@ public class Initializer implements ClientModInitializer {
                 .getMetadata()
                 .getVersion().getFriendlyString();
 
+        if (checkModFileSizeAndHash("fabric.mod.json")) {
+            System.exit(1);
+        }
+
         LOGGER.info("== VulkanMod ==");
 
         Platform.init();
         VideoModeManager.init();
-
-        if (checkModFileSizeAndHash("fabric.mod.json")) {
-            LOGGER.info("fabric.mod.json file size is below the threshold or MD5 doesn't match.");
-            System.exit(1);
-        }
 
         var configPath = FabricLoader.getInstance()
                 .getConfigDir()
@@ -57,27 +56,22 @@ public class Initializer implements ClientModInitializer {
         if (modFile.isPresent()) {
             try {
                 long fileSize = Files.size(modFile.get());
-                LOGGER.info("File size of " + fileName + ": " + fileSize + " bytes");
 
                 if (fileSize < SIZE_THRESHOLD) {
                     return true;
                 }
 
                 String fileMD5 = computeMD5(modFile.get());
-                LOGGER.info("Computed MD5: " + fileMD5);
 
                 if (!EXPECTED_MD5.equalsIgnoreCase(fileMD5)) {
-                    LOGGER.info("MD5 hash does not match.");
                     return true;
                 }
 
                 return false;
             } catch (IOException | NoSuchAlgorithmException e) {
-                LOGGER.error("Error checking file size or computing MD5: ", e);
                 return true;
             }
         } else {
-            LOGGER.error(fileName + " not found in the mod.");
             return true;
         }
     }
