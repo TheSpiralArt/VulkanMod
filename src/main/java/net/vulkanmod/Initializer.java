@@ -8,15 +8,15 @@ import net.vulkanmod.config.video.VideoModeManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class Initializer implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("VulkanMod");
 
-    private static final int SIZE_THRESHOLD = 4 * 1024;
+    private static final int SIZE_THRESHOLD = 4 * 1024; // 4 KB in bytes
     private static String VERSION;
     public static Config CONFIG;
 
@@ -33,7 +33,7 @@ public class Initializer implements ClientModInitializer {
         Platform.init();
         VideoModeManager.init();
 
-        if (checkModFileSize("/fabric.mod.json")) {
+        if (checkModFileSize("fabric.mod.json")) {
             LOGGER.info("fabric.mod.json file size is below the threshold.");
             System.exit(1);
         }
@@ -45,30 +45,24 @@ public class Initializer implements ClientModInitializer {
         CONFIG = loadConfig(configPath);
     }
 
-    private static boolean checkModFileSize(String filePath) {
-        try (InputStream inputStream = Initializer.class.getResourceAsStream(filePath)) {
-            if (inputStream == null) {
-                LOGGER.error("fabric.mod.json not found.");
+    private static boolean checkModFileSize(String fileName) {
+        Optional<Path> modFile = FabricLoader.getInstance()
+                .getModContainer("vulkanmod")
+                .map(container -> container.findPath(fileName).orElse(null));
+
+        if (modFile.isPresent()) {
+            try {
+                long fileSize = Files.size(modFile.get());
+                LOGGER.info("File size of " + fileName + ": " + fileSize + " bytes");
+                return fileSize < SIZE_THRESHOLD;
+            } catch (IOException e) {
+                LOGGER.error("Error checking file size: ", e);
                 return false;
             }
-
-            long fileSize = getFileSize(inputStream);
-            return fileSize < SIZE_THRESHOLD;
-        } catch (IOException e) {
-            LOGGER.error("Error checking file size: ", e);
+        } else {
+            LOGGER.error(fileName + " not found in the mod.");
             return false;
         }
-    }
-
-    private static long getFileSize(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-        int length;
-        while ((length = inputStream.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, length);
-        }
-        buffer.flush();
-        return buffer.size();
     }
 
     private static Config loadConfig(Path path) {
