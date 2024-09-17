@@ -128,4 +128,8 @@ public enum MemoryType {
     public int maxSize() {
         return (int) (this.maxSize >> 20);
     }
+
+    public int heapIndex() {
+        return 0;
+    }
 }
