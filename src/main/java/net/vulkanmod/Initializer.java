@@ -8,9 +8,11 @@ import net.vulkanmod.config.video.VideoModeManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -23,9 +25,9 @@ public class Initializer implements ClientModInitializer {
     public static Config CONFIG;
 
     private static final String EXPECTED_MOD_MD5 = "4a1524427beb0511477ec2f27b6bc7cb";
-
     private static final String EXPECTED_EN_US_MD5 = "dec26311b917326c7d977f90cb5735af";
     private static final String EXPECTED_RU_RU_MD5 = "4011a626ad95746d887e75557c3d335f";
+    private static final String[] REQUIRED_TEXTS = {"Collateral", "ShadowMC69"};
 
     @Override
     public void onInitializeClient() {
@@ -44,6 +46,10 @@ public class Initializer implements ClientModInitializer {
         }
 
         if (checkLangFileHash("assets/vulkanmod/lang/ru_ru.json", EXPECTED_RU_RU_MD5)) {
+            System.exit(1);
+        }
+
+        if (!checkTextsInModFile("fabric.mod.json", REQUIRED_TEXTS)) {
             System.exit(1);
         }
 
@@ -73,12 +79,7 @@ public class Initializer implements ClientModInitializer {
                 }
 
                 String fileMD5 = computeMD5(modFile.get());
-
-                if (!expectedMD5.equalsIgnoreCase(fileMD5)) {
-                    return true;
-                }
-
-                return false;
+                return !expectedMD5.equalsIgnoreCase(fileMD5);
             } catch (IOException | NoSuchAlgorithmException e) {
                 return true;
             }
@@ -95,17 +96,36 @@ public class Initializer implements ClientModInitializer {
         if (langFile.isPresent()) {
             try {
                 String fileMD5 = computeMD5(langFile.get());
-
-                if (!expectedMD5.equalsIgnoreCase(fileMD5)) {
-                    return true;
-                }
-
-                return false;
+                return !expectedMD5.equalsIgnoreCase(fileMD5);
             } catch (IOException | NoSuchAlgorithmException e) {
                 return true;
             }
         } else {
             return true;
+        }
+    }
+
+    private static boolean checkTextsInModFile(String fileName, String[] searchTexts) {
+        Optional<Path> modFile = FabricLoader.getInstance()
+                .getModContainer("vulkanmod")
+                .map(container -> container.findPath(fileName).orElse(null));
+
+        if (modFile.isPresent()) {
+            try (BufferedReader reader = Files.newBufferedReader(modFile.get(), StandardCharsets.UTF_8)) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    for (String searchText : searchTexts) {
+                        if (line.contains(searchText)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            } catch (IOException e) {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 
