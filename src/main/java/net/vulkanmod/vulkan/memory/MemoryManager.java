@@ -37,10 +37,6 @@ public class MemoryManager {
     private static final Long2ReferenceOpenHashMap<VulkanImage> images = new Long2ReferenceOpenHashMap<>();
 
     static int Frames;
-
-    private static long deviceMemory = 0;
-    private static long nativeMemory = 0;
-
     private int currentFrame = 0;
 
     private ObjectArrayList<Buffer.BufferInfo>[] freeableBuffers = new ObjectArrayList[Frames];
@@ -114,8 +110,9 @@ public class MemoryManager {
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
             if (result != VK_SUCCESS) {
-                Initializer.LOGGER.info(String.format("Failed to create buffer with size: %.3f MB", ((float) size / BYTES_IN_MB)));
-                Initializer.LOGGER.info(String.format("Tracked Device Memory used: %d/%d MB", getAllocatedDeviceMemoryMB(), getDeviceMemoryMB()));
+                ///TODO: Fix Heap Size reporting w. BAR Mem
+//                Initializer.LOGGER.info(String.format("Failed to create buffer with size: %.3f MB", ((float) size / BYTES_IN_MB)));
+//                Initializer.LOGGER.info(String.format("Tracked Device Memory used: %d/%d MB", getAllocatedDeviceMemoryMB(), getDeviceMemoryMB()));
                 Initializer.LOGGER.info(getHeapStats());
 
                 throw new RuntimeException("Failed to create buffer: %s".formatted(VkResult.decode(result)));
@@ -136,12 +133,6 @@ public class MemoryManager {
 
             buffer.setId(pBuffer.get(0));
             buffer.setAllocation(pAllocation.get(0));
-
-            if ((properties & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0) {
-                deviceMemory += size;
-            } else {
-                nativeMemory += size;
-            }
 
             buffers.putIfAbsent(buffer.getId(), buffer);
         }
@@ -207,12 +198,6 @@ public class MemoryManager {
 
     private static void freeBuffer(Buffer.BufferInfo bufferInfo) {
         vmaDestroyBuffer(ALLOCATOR, bufferInfo.id(), bufferInfo.allocation());
-
-        if (bufferInfo.type() == MemoryType.Type.DEVICE_LOCAL) {
-            deviceMemory -= bufferInfo.bufferSize();
-        } else {
-            nativeMemory -= bufferInfo.bufferSize();
-        }
 
         buffers.remove(bufferInfo.id());
     }
@@ -294,18 +279,6 @@ public class MemoryManager {
         this.segmentsToFree[this.currentFrame].add(new Pair<>(areaBuffer, offset));
     }
 
-    public int getNativeMemoryMB() {
-        return bytesInMb(nativeMemory);
-    }
-
-    public int getAllocatedDeviceMemoryMB() {
-        return bytesInMb(deviceMemory);
-    }
-
-    public int getDeviceMemoryMB() {
-        return bytesInMb(MemoryTypes.GPU_MEM.vkMemoryHeap.size());
-    }
-
     int bytesInMb(long bytes) {
         return (int) (bytes / BYTES_IN_MB);
     }
@@ -316,7 +289,7 @@ public class MemoryManager {
 
             vmaGetHeapBudgets(ALLOCATOR, vmaBudgets);
 
-            VmaBudget vmaBudget = vmaBudgets.get(MemoryTypes.GPU_MEM.vkMemoryType.heapIndex());
+            VmaBudget vmaBudget = vmaBudgets.get(MemoryType.GPU_MEM.heapIndex());
             long usage = vmaBudget.usage();
             long budget = vmaBudget.budget();
 
