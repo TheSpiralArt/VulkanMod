@@ -49,6 +49,11 @@ public class Initializer implements ClientModInitializer {
 
         LOGGER.info("== VulkanMod ==");
 
+        LOGGER.info("👨‍💻 Modified and Patched by: ShadowMC69 👨‍💻");
+        LOGGER.warn("☣️ If you NOT downloaded this from ShadowMC69, delete this immediately as this may contains malware! ☣️");
+        LOGGER.warn("✖️ Also, we'll not help you in case of bugs/crashes if you downloaded this from others! ✖️");
+        LOGGER.warn("🎮 Game is launching! 🎮");
+        
         Platform.init();
         VideoModeManager.init();
 
