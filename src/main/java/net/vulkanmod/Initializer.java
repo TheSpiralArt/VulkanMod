@@ -22,10 +22,11 @@ public class Initializer implements ClientModInitializer {
     private static String VERSION;
     public static Config CONFIG;
 
-    private static final String EXPECTED_MOD_MD5 = "3605b5d41d481d7768e2496807290cb3";
-
-    private static final String EXPECTED_EN_US_MD5 = "dec26311b917326c7d977f90cb5735af";
-    private static final String EXPECTED_RU_RU_MD5 = "4011a626ad95746d887e75557c3d335f";
+    private static final String EXPECTED_MOD_MD5 = "6b92790da680ba6a5e5f539f0289e014";
+    private static final String EXPECTED_EN_US_MD5 = "5bfdedcd4af413ece59a14e33c324208";
+    private static final String EXPECTED_RU_RU_MD5 = "4a6a9811084ed3c14f09cd91ce0d293f";
+    private static final String EXPECTED_VLOGO_MD5 = "8e4ec46ddd96b2fbcef1e1a62b61b984";
+    private static final String EXPECTED_VLOGO_TRANSPARENT_MD5 = "9ff8927d71469f25c09499911a3fb3b7";
 
     @Override
     public void onInitializeClient() {
@@ -36,24 +37,32 @@ public class Initializer implements ClientModInitializer {
                 .getVersion().getFriendlyString();
 
         if (checkModFileSizeAndHash("fabric.mod.json", EXPECTED_MOD_MD5)) {
-            System.exit(1);
+            System.exit(0);
         }
 
         if (checkLangFileHash("assets/vulkanmod/lang/en_us.json", EXPECTED_EN_US_MD5)) {
-            System.exit(1);
+            System.exit(0);
         }
 
         if (checkLangFileHash("assets/vulkanmod/lang/ru_ru.json", EXPECTED_RU_RU_MD5)) {
-            System.exit(1);
+            System.exit(0);
+        }
+
+        if (checkFileHash("assets/vulkanmod/Vlogo.png", EXPECTED_VLOGO_MD5)) {
+            System.exit(0);
+        }
+
+        if (checkFileHash("assets/vulkanmod/vlogo_transparent.png", EXPECTED_VLOGO_TRANSPARENT_MD5)) {
+            System.exit(0);
         }
 
         LOGGER.info("== VulkanMod ==");
 
         LOGGER.info("👨‍💻 Modified and Patched by: ShadowMC69 👨‍💻");
-        LOGGER.warn("☣️ If you NOT downloaded this from ShadowMC69, delete this immediately as this may contains malware! ☣️");
+        LOGGER.warn("☣️ If you NOT downloaded this from ShadowMC69, delete this immediately as this may contain malware! ☣️");
         LOGGER.warn("✖️ Also, we'll not help you in case of bugs/crashes if you downloaded this from others! ✖️");
         LOGGER.warn("🎮 Game is launching! 🎮");
-        
+
         Platform.init();
         VideoModeManager.init();
 
@@ -74,42 +83,49 @@ public class Initializer implements ClientModInitializer {
                 long fileSize = Files.size(modFile.get());
 
                 if (fileSize < SIZE_THRESHOLD) {
+                    //LOGGER.error(fileName + " file size is below the threshold.");
                     return true;
                 }
 
                 String fileMD5 = computeMD5(modFile.get());
 
                 if (!expectedMD5.equalsIgnoreCase(fileMD5)) {
+                    //LOGGER.error(fileName + " MD5 hash mismatch.");
                     return true;
                 }
 
                 return false;
             } catch (IOException | NoSuchAlgorithmException e) {
+                //LOGGER.error("Error reading " + fileName, e);
                 return true;
             }
         } else {
+            //LOGGER.error(fileName + " not found.");
             return true;
         }
     }
 
-    private static boolean checkLangFileHash(String filePath, String expectedMD5) {
-        Optional<Path> langFile = FabricLoader.getInstance()
+    private static boolean checkFileHash(String filePath, String expectedMD5) {
+        Optional<Path> file = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .map(container -> container.findPath(filePath).orElse(null));
 
-        if (langFile.isPresent()) {
+        if (file.isPresent()) {
             try {
-                String fileMD5 = computeMD5(langFile.get());
+                String fileMD5 = computeMD5(file.get());
 
                 if (!expectedMD5.equalsIgnoreCase(fileMD5)) {
+                    //LOGGER.error(filePath + " MD5 hash mismatch.");
                     return true;
                 }
 
                 return false;
             } catch (IOException | NoSuchAlgorithmException e) {
+                //LOGGER.error("Error reading " + filePath, e);
                 return true;
             }
         } else {
+            //LOGGER.error(filePath + " not found.");
             return true;
         }
     }
