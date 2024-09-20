@@ -40,11 +40,11 @@ public class Initializer implements ClientModInitializer {
             System.exit(0);
         }
 
-        if (checkLangFileHash("assets/vulkanmod/lang/en_us.json", EXPECTED_EN_US_MD5)) {
+        if (checkFileHash("assets/vulkanmod/lang/en_us.json", EXPECTED_EN_US_MD5)) {
             System.exit(0);
         }
 
-        if (checkLangFileHash("assets/vulkanmod/lang/ru_ru.json", EXPECTED_RU_RU_MD5)) {
+        if (checkFileHash("assets/vulkanmod/lang/ru_ru.json", EXPECTED_RU_RU_MD5)) {
             System.exit(0);
         }
 
