@@ -148,7 +148,6 @@ public class Vulkan {
         DeviceManager.init(instance);
 
         createVma();
-        MemoryTypes.createMemoryTypes();
 
         createCommandPool();
         allocateImmediateCmdBuffer();
