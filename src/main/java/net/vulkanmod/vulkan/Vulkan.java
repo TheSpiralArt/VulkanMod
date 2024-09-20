@@ -163,6 +163,7 @@ public class Vulkan {
             freeStagingBuffers();
         }
 
+        stagingBuffers = new StagingBuffer[Renderer.getFramesNum()];
         chunkStaging = new StagingBuffer[Renderer.getFramesNum()];
 
         for (int i = 0; i < stagingBuffers.length; ++i) {
