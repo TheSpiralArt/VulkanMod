@@ -172,6 +172,7 @@ public class Vulkan {
 
         for (int i = 0; i < chunkStaging.length; ++i) {
             chunkStaging[i] = new StagingBuffer(8388608, MemoryType.BAR_MEM);
+        }
 
     static void setupDepthFormat() {
         DEFAULT_DEPTH_FORMAT = DeviceManager.findDepthFormat(use24BitsDepthFormat);
