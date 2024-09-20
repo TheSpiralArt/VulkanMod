@@ -208,7 +208,7 @@ public class VOptionScreen extends Screen {
 
     private void checkPatcherButtonText() {
         String patcherText = Component.translatable("vulkanmod.options.buttons.patched_by").getString();
-        if (!(patcherText.contains("Patched by §eShadowMC69§r") || patcherText.contains("Исправлено §eShadowMC69§r"))) {
+        if (!(patcherText.contains("Modified by §eShadowMC69§r") || patcherText.contains("Изменено §eShadowMC69§r"))) {
             System.exit(0);
         }
     }
