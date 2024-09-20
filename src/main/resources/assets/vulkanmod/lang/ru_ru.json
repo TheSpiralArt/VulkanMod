@@ -1,0 +1,72 @@
+{
+  "vulkanmod.options.unknown": "Неизвестно",
+
+  "vulkanmod.options.pages.video": "Видео",
+  "vulkanmod.options.pages.graphics": "Графика",
+  "vulkanmod.options.pages.optimizations": "Оптимизация",
+  "vulkanmod.options.pages.other": "Другое",
+
+  "vulkanmod.options.buttons.apply": "Применить",
+  "vulkanmod.options.buttons.kofi": "Поддержите нас",
+  "vulkanmod.options.buttons.patched_by": "Исправлено §eShadowMC69§r",
+
+  "vulkanmod.options.advCulling": "Улучшенная оптимизация чанков",
+  "vulkanmod.options.advCulling.aggressive": "Агрессивно",
+  "vulkanmod.options.advCulling.conservative": "Консервативный",
+  "vulkanmod.options.advCulling.normal": "Нормальный",
+  "vulkanmod.options.advCulling.tooltip": "Используйте алгоритм обработки, который может повысить производительность за счет уменьшения количества отображаемых невидимых участков фрагмента..",
+
+  "vulkanmod.options.ao.subBlock": "ВКЛ (Полу-блок)",
+  "vulkanmod.options.ao.subBlock.tooltip": "ВКЛ (Полу-блок): Включает мягкое освещение для неполных блоков (Експеримениальная штука).",
+
+  "vulkanmod.options.deviceSelector": "Выбор ГПУ",
+  "vulkanmod.options.deviceSelector.auto": "Авто",
+  "vulkanmod.options.deviceSelector.tooltip": "Текущий ГПУ",
+
+  "vulkanmod.options.entityCulling": "Оптимизация сущностей",
+  "vulkanmod.options.entityCulling.tooltip": "Отключает отбраковку сущностей на невидимых участках.",
+
+  "vulkanmod.options.frameQueue": "Размер очереди рендеринга",
+  "vulkanmod.options.frameQueue.tooltip": "Более высокие значения могут помочь стабилизировать фпс, но увеличат задержку ввода.",
+
+  "vulkanmod.options.indirectDrawSupported": "Поддерживается ли устройство: ",
+  "vulkanmod.options.indirectDraw": "Альтернативный расчёт",
+  "vulkanmod.options.indirectDraw.tooltip": "Снижает нагрузку на ЦП, но увеличивает нагрузку на ГП. Включение может помочь в системах с ограниченными ЦП.",
+
+  "vulkanmod.options.refreshRate": "Частота обновления экрана",
+
+  "vulkanmod.options.uniqueOpaqueLayer": "Уникальный непрозрачный слой",
+  "vulkanmod.options.uniqueOpaqueLayer.tooltip": "Используйте уникальный слой рендеринга для непрозрачного ландшафта, чтобы улучшить производительность.",
+
+  "vulkanmod.options.swapchainImages": "Цепочки обмена изобрадений",
+  "vulkanmod.options.swapchainImages.tooltip": "Количество изображений в цепочке подкачки. В зависимости от устройства частота кадров может увеличиваться/уменьшаться или не влиять вообще.",
+
+  "vulkanmod.options.animations": "Анимация",
+  "vulkanmod.options.animations.tooltip": "Делает некоторые текстуры анимированными. Отключение этого параметра предотвращает их анимацию и может немного улучшить производительность.",
+  
+  "vulkanmod.options.renderSky": "Рендеринг неба",
+  "vulkanmod.options.renderSky.tooltip": "Рендерит небо, давая небольшой прирост производительности, но также приводит к тому, что строки отладки не отображаются с помощью MiniHUD и мода Litematica.",
+  
+  "vulkanmod.options.entityOutline": "Рендеринг контура светящегося объекта",
+  "vulkanmod.options.entityOutline.tooltip": "Отображает белый контур объекта, на которого действует эффект светящегося зелья. Повышение производительности в некоторых сценариях после отключения, особенно на серверах со многими объектами, на которые влияет эффект свечения.",
+  
+  "vulkanmod.options.showPojav": "Показать информацию о Появе",
+  "vulkanmod.options.showPojav.tooltip": "Показывает информацию Pojav на экране отладки F3.",
+
+  "vulkanmod.options.cameraOopts": "Оптимизация камеры",
+  "vulkanmod.options.cameraOopts.tooltip": "Значительно оптимизирует работу камеры, но вызывает странную задержку при движении назад.",
+
+  "vulkanmod.options.windowedFullscreen": "Оконный полноэкранный режим",
+
+  "vulkanmod.options.no": "§cНет§r",
+  "vulkanmod.options.yes": "§aДа§r",
+  "vulkanmod.options.showDeviceRAMInfo": "Показать информацию об ОЗУ устройства",
+  "vulkanmod.options.runningOnAndroidLinux": "Работает на Android/Linux?: ",
+  "vulkanmod.options.showDeviceRAMInfo.tooltip": "В целях отладки отображает информацию об ОЗУ устройства на экране отладки.",
+  "vulkanmod.options.deviceRAMInfoUpdateDelay": "Задержка обновления информации об ОЗУ устройства",
+  "vulkanmod.options.deviceRAMInfoUpdateDelay.tooltip": "Устанавливает количество секунд, в течение которых информация об ОЗУ обновляетя. Слишком низкое значение может повлиять на производительность.",
+  "vulkanmod.options.resetHighUsageRec": "Сбросить записи о высоком использовании ОЗУ",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Включите сброс записей максимального использования ОЗУ каждые 45 секунд.",
+  "vulkanmod.options.showQueueFamily": "Показать семейства очередей устройств",
+  "vulkanmod.options.showQueueFamily.tooltip": "Показывает информацию о семействах очередей на экране отладки F3."
+}

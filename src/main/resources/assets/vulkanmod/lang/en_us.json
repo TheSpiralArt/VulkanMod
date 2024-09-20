@@ -8,6 +8,7 @@
 
   "vulkanmod.options.buttons.apply": "Apply",
   "vulkanmod.options.buttons.kofi": "Support me",
+  "vulkanmod.options.buttons.patched_by": "Patched by §eShadowMC69§r",
 
   "vulkanmod.options.advCulling": "Advanced Chunk Culling",
   "vulkanmod.options.advCulling.aggressive": "Aggressive",
@@ -28,6 +29,7 @@
   "vulkanmod.options.frameQueue": "Render queue size",
   "vulkanmod.options.frameQueue.tooltip": "Higher values might help stabilize frametime but will increase input lag.",
 
+  "vulkanmod.options.indirectDrawSupported": "Supported by device: ",
   "vulkanmod.options.indirectDraw": "Indirect Draw",
   "vulkanmod.options.indirectDraw.tooltip": "Reduces CPU overhead but increases GPU overhead. Enabling it might help in CPU limited systems.",
 
@@ -36,5 +38,35 @@
   "vulkanmod.options.uniqueOpaqueLayer": "Unique opaque layer",
   "vulkanmod.options.uniqueOpaqueLayer.tooltip": "Use a unique render layer for opaque terrain to improve performance.",
 
-  "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen"
+  "vulkanmod.options.swapchainImages": "Swapchain Images",
+  "vulkanmod.options.swapchainImages.tooltip": "The number of images in the swap chain. Depending on the device, the frame rate may increase/decrease or have no effect at all.",
+
+  "vulkanmod.options.animations": "Animations",
+  "vulkanmod.options.animations.tooltip": "Makes the animated textures to animate. Disabling this prevents them from animating and may improve performance a bit.",
+  
+  "vulkanmod.options.renderSky": "Render Sky",
+  "vulkanmod.options.renderSky.tooltip": "Renders the sky, giving small performance boost but it also makes debug lines doesn't render with MiniHUD, and Litematica mod.",
+  
+  "vulkanmod.options.entityOutline": "Render Glowing Entity Outline",
+  "vulkanmod.options.entityOutline.tooltip": "Renders White Outline if an entity affected by Glowing potion effect. Giving performance boost in some scenarios once disabled especially in servers with many entities affected with Glowing Effect.",
+
+  "vulkanmod.options.showPojav": "Show Pojav Info",
+  "vulkanmod.options.showPojav.tooltip": "Shows Pojav information on the F3 debug screen.",
+  
+  "vulkanmod.options.cameraOopts": "Camera Optimization",
+  "vulkanmod.options.cameraOopts.tooltip": "Greatly optimizes camera performance but causes weird chunk delay when moving backwards.",
+  
+  "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen",
+
+  "vulkanmod.options.no": "§cNo§r",
+  "vulkanmod.options.yes": "§aYes§r",
+  "vulkanmod.options.showDeviceRAMInfo": "Show Device RAM Info",
+  "vulkanmod.options.runningOnAndroidLinux": "Running on Android/Linux?: ",
+  "vulkanmod.options.showDeviceRAMInfo.tooltip": "For Debugging purposes, shows your Device RAM Info on debug screen.",
+  "vulkanmod.options.deviceRAMInfoUpdateDelay": "Device RAM Info update delay",
+  "vulkanmod.options.deviceRAMInfoUpdateDelay.tooltip": "Sets the number of seconds when the RAM info updates information. Setting too low can affect performance.",
+  "vulkanmod.options.resetHighUsageRec": "Reset High Usage Records",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Enable to reset highest memory and RAM usage records every 45 seconds.",
+  "vulkanmod.options.showQueueFamily": "Show Device Queue Families",
+  "vulkanmod.options.showQueueFamily.tooltip": "Shows queue families info on F3 debug screen."
 }
