@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.memory.MemoryType;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import static net.vulkanmod.Initializer.CONFIG;
 import static net.vulkanmod.Initializer.getVersion;
-import static org.lwjgl.vulkan.KHRSurface.*;
 
 @Mixin(DebugScreenOverlay.class)
 public abstract class DebugScreenOverlayM {
@@ -63,9 +63,9 @@ public abstract class DebugScreenOverlayM {
         strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
         strings.add(String.format("Allocated: % 2d%% %03dMB", totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
         strings.add(String.format("Off-heap: " + getOffHeapMemory() + "MB"));
-        strings.add("NativeMemory: " + MemoryType.HOST_MEM.usedBytes()+"/" + MemoryType.HOST_MEM.maxSize() + "MB");
-        strings.add("UploadMemory: " + MemoryType.BAR_MEM.usedBytes()+"/" + MemoryType.BAR_MEM.maxSize() + "MB");
-        strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes()+"/" + MemoryType.GPU_MEM.maxSize() + "MB");
+        strings.add("NativeMemory: " + MemoryType.HOST_MEM.usedBytes() + "/" + MemoryType.HOST_MEM.maxSize() + "MB");
+        strings.add("UploadMemory: " + MemoryType.BAR_MEM.usedBytes() + "/" + MemoryType.BAR_MEM.maxSize() + "MB");
+        strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes() + "/" + MemoryType.GPU_MEM.maxSize() + "MB");
         strings.add("");
         strings.add("VulkanMod " + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
@@ -77,13 +77,10 @@ public abstract class DebugScreenOverlayM {
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
 
         if (CONFIG.showPojav) {
-    strings.add("");
-    strings.add("Running on Pojav: " + (isRunningOnAndroid() ? "§aYes§r" : "§cNo§r"));
-    if (isRunningOnAndroid()) {
-        strings.add("Using ASR: " + ((pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || 
-                                      pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR || 
-                                      pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) 
-                                      ? "§aYes§r" : "§cNo§r"));
+            strings.add("");
+            strings.add("Running on Pojav: " + (AndroidDeviceChecker.isRunningOnAndroid() ? "§aYes§r" : "§cNo§r"));
+            if (AndroidDeviceChecker.isRunningOnAndroid()) {
+                strings.add("Using ASR: " + ((pretransformFlags != 0) ? "§aYes§r" : "§cNo§r"));
             }
         }
         
@@ -96,7 +93,7 @@ public abstract class DebugScreenOverlayM {
             strings.add("Compute Queue: " + (Queue.computeFallback ? "§eFallback§r" : "§aSupported§r"));
         }
     
-        if (isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
+        if (AndroidDeviceChecker.isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
             strings.add("");
             strings.add("Device RAM Info:");
             strings.add(DeviceRAMInfo.getMemoryInfo());
@@ -107,18 +104,6 @@ public abstract class DebugScreenOverlayM {
         }
         
         return strings;
-    }
-
-    private static boolean isRunningOnAndroid() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        return (osName.contains("linux") || osName.contains("android")) && (System.getenv("POJAV_ENVIRON") != null ||
-               System.getenv("SCL_ENVIRON") != null ||
-               System.getenv("POJAV_RENDERER") != null);
-    }
-
-    private static boolean isRunningOnCompatDevice() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        return osName.contains("linux") || osName.contains("android");
     }
 
     private long getOffHeapMemory() {
