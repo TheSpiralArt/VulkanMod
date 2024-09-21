@@ -45,12 +45,6 @@ public class QueueFamilyIndices {
                 if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0) {
                     graphicsFamily = g;
                     graphicsSupported = true;
-                    vkGetPhysicalDeviceSurfaceSupportKHR(device, g, Vulkan.getSurface(), presentSupport);
-                    if (presentSupport.get(0) == VK_TRUE) {
-                        presentFamily = g;
-                        presentSupported = true;
-                        break;
-                    }
                 }
             }
 
