@@ -1,6 +1,8 @@
 package net.vulkanmod.vulkan;
 
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import oshi.hardware.CentralProcessor;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,7 +12,7 @@ public class SystemInfo {
     public static final String cpuInfo;
 
     static {
-        cpuInfo = isRunningOnAndroid() ? getProcessorNameForAndroid() : getProcessorNameForDesktop();
+        cpuInfo = AndroidDeviceChecker.isRunningOnAndroid() ? getProcessorNameForAndroid() : getProcessorNameForDesktop();
     }
 
     public static String getProcessorNameForAndroid() {
@@ -28,18 +30,10 @@ public class SystemInfo {
 
     public static String getProcessorNameForDesktop() {
         try {
-            return new oshi.SystemInfo().getHardware().getProcessor().getProcessorIdentifier().getName().replaceAll("\\s+", " ");
+            CentralProcessor centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
+            return String.format("%s", centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
         } catch (NoClassDefFoundError | Exception e) {
             return getProcessorNameForAndroid();
         }
-    }
-
-    private static boolean isRunningOnAndroid() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        return (osName.contains("linux") || osName.contains("android")) &&
-                (System.getenv("POJAV_ENVIRON") != null ||
-                System.getenv("SCL_ENVIRON") != null ||
-                System.getenv("SCL_RENDERER") != null ||
-                System.getenv("POJAV_RENDERER") != null);
     }
 }
