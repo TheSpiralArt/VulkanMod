@@ -92,6 +92,10 @@ public class QueueFamilyIndices {
                 }
             }
 
+            if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
+                transferFamily = graphicsFamily;
+            }
+
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
 
             if (graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
