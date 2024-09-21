@@ -1,7 +1,7 @@
 package net.vulkanmod.vulkan.device;
 
 import net.vulkanmod.Initializer;
-import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
+import net.vulkanmod.vulkan.device.MobileDeviceChecker;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -77,7 +77,7 @@ public class DeviceRAMInfo {
     }
 
     public static void getAllMemoryInfo() {
-        if (AndroidDeviceChecker.isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
+        if (MobileDeviceChecker.isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 lock.lock();
