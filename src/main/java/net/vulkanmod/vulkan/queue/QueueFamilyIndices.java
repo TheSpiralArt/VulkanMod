@@ -43,7 +43,6 @@ public class QueueFamilyIndices {
                 int queueFlags = queueFamilies.get(g).queueFlags();
 
                 if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0) {
-                    graphicsSupported = true;
                     graphicsFamily = g;
                     break;
                 }
@@ -54,7 +53,6 @@ public class QueueFamilyIndices {
                 if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0 &&
                     (queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
                     transferFamily == VK_QUEUE_FAMILY_IGNORED) {
-                    transferSupported = true;
                     transferFamily = t;
                     break;
                 }
@@ -64,11 +62,18 @@ public class QueueFamilyIndices {
                 for (int p = 0; p < queueFamilies.capacity(); p++) {
                     vkGetPhysicalDeviceSurfaceSupportKHR(device, p, Vulkan.getSurface(), presentSupport);
                     if (presentSupport.get(0) == VK_TRUE) {
-                        presentSupported = true;
                         presentFamily = p;
                         break;
                     }
                 }
+            }
+
+            if (presentFamily != VK_QUEUE_FAMILY_IGNORED) {
+                presentSupported = true;
+            }
+
+            if (graphicsFamily != VK_QUEUE_FAMILY_IGNORED) {
+                graphicsSupported = true;
             }
 
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
@@ -80,6 +85,10 @@ public class QueueFamilyIndices {
                         break;
                     }
                 }
+            }
+
+            if (transferFamily != VK_QUEUE_FAMILY_IGNORED) {
+                transferSupported = true;
             }
 
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
