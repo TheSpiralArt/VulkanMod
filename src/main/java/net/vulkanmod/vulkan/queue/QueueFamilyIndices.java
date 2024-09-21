@@ -105,19 +105,19 @@ public class QueueFamilyIndices {
         }
     }
 
-    public boolean isComplete() {
+    public static boolean isComplete() {
         return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED && transferFamily != VK_QUEUE_FAMILY_IGNORED;
     }
 
-    public boolean isSuitable() {
+    public static boolean isSuitable() {
         return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED;
     }
 
-    public int[] unique() {
+    public static int[] unique() {
         return IntStream.of(graphicsFamily, presentFamily, transferFamily).distinct().toArray();
     }
 
-    public int[] array() {
+    public static int[] array() {
         return new int[]{graphicsFamily, presentFamily};
     }
 }
