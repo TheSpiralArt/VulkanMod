@@ -6,9 +6,9 @@ import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
+import net.vulkanmod.vulkan.device.MobileDeviceChecker;
 import net.vulkanmod.vulkan.memory.MemoryType;
 import net.vulkanmod.vulkan.queue.Queue;
 import org.spongepowered.asm.mixin.Final;
@@ -78,8 +78,8 @@ public abstract class DebugScreenOverlayM {
 
         if (CONFIG.showPojav) {
             strings.add("");
-            strings.add("Running on Pojav: " + (AndroidDeviceChecker.isRunningOnAndroid() ? "§aYes§r" : "§cNo§r"));
-            if (AndroidDeviceChecker.isRunningOnAndroid()) {
+            strings.add("Running on Pojav: " + (MobileDeviceChecker.isRunningOnAndroid() || MobileDeviceChecker.isRunningOniOS() ? "§aYes§r" : "§cNo§r"));
+            if (MobileDeviceChecker.isRunningOnAndroid()) {
                 strings.add("Using ASR: " + ((pretransformFlags != 0) ? "§aYes§r" : "§cNo§r"));
             }
         }
@@ -93,7 +93,7 @@ public abstract class DebugScreenOverlayM {
             strings.add("Compute Queue: " + (Queue.computeFallback ? "§eFallback§r" : "§aSupported§r"));
         }
     
-        if (AndroidDeviceChecker.isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
+        if (MobileDeviceChecker.isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
             strings.add("");
             strings.add("Device RAM Info:");
             strings.add(DeviceRAMInfo.getMemoryInfo());
