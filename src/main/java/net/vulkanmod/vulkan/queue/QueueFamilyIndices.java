@@ -110,7 +110,8 @@ public class QueueFamilyIndices {
     }
 
     public static boolean isComplete() {
-        return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED && transferFamily != VK_QUEUE_FAMILY_IGNORED;
+        return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED
+                && transferFamily != VK_QUEUE_FAMILY_IGNORED;
     }
 
     public static boolean isSuitable() {
