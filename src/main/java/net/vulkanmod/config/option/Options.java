@@ -11,8 +11,8 @@ import net.vulkanmod.config.video.VideoModeSet;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.DeviceManager;
+import net.vulkanmod.vulkan.device.MobileDeviceChecker;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
@@ -324,11 +324,11 @@ public abstract class Options {
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
-                    value -> config.showDeviceRAM = AndroidDeviceChecker.isRunningOnCompatDevice() ? value : false,
-                    () -> AndroidDeviceChecker.isRunningOnCompatDevice() && config.showDeviceRAM)
+                    value -> config.showDeviceRAM = MobileDeviceChecker.isRunningOnCompatDevice() ? value : false,
+                    () -> MobileDeviceChecker.isRunningOnCompatDevice() && config.showDeviceRAM)
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnAndroidLinux")
-                            .append(Component.translatable(AndroidDeviceChecker.isRunningOnCompatDevice() ? "vulkanmod.options.yes" : "vulkanmod.options.no"))
+                            .append(Component.translatable(MobileDeviceChecker.isRunningOnCompatDevice() ? "vulkanmod.options.yes" : "vulkanmod.options.no"))
                             .append("\n\n")
                             .append(Component.translatable("vulkanmod.options.showDeviceRAMInfo.tooltip"))),
             new RangeOption(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay"), 0, 10, 1,
