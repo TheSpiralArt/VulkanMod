@@ -24,21 +24,14 @@ public class QueueFamilyIndices {
     public static boolean transferSupported = false;
 
     public static boolean findQueueFamilies(VkPhysicalDevice device) {
-
         try (MemoryStack stack = stackPush()) {
             IntBuffer queueFamilyCount = stack.ints(0);
-
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, null);
-
-            if (queueFamilyCount.get(0) == 1) {
-                transferFamily = presentFamily = graphicsFamily = 0;
-                return true;
-            }
-
-            IntBuffer presentSupport = stack.ints(VK_FALSE);
             VkQueueFamilyProperties.Buffer queueFamilies = VkQueueFamilyProperties.mallocStack(queueFamilyCount.get(0), stack);
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, queueFamilies);
-        
+
+            IntBuffer presentSupport = stack.ints(VK_FALSE);
+
             for (int g = 0; g < queueFamilies.capacity(); g++) {
                 int queueFlags = queueFamilies.get(g).queueFlags();
 
