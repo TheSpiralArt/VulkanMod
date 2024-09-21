@@ -14,11 +14,11 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class QueueFamilyIndices {
 
-    public int graphicsFamily = VK_QUEUE_FAMILY_IGNORED;
-    public int presentFamily = VK_QUEUE_FAMILY_IGNORED;
-    public int transferFamily = VK_QUEUE_FAMILY_IGNORED;
+    public static int graphicsFamily = VK_QUEUE_FAMILY_IGNORED;
+    public static int presentFamily = VK_QUEUE_FAMILY_IGNORED;
+    public static int transferFamily = VK_QUEUE_FAMILY_IGNORED;
 
-    public boolean hasDedicatedTransferQueue = false;
+    public static boolean hasDedicatedTransferQueue = false;
     public static boolean graphicsSupported = false;
     public static boolean presentSupported = false;
     public static boolean transferSupported = false;
