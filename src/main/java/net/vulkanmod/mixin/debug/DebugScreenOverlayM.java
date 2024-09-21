@@ -89,7 +89,7 @@ public abstract class DebugScreenOverlayM {
             strings.add("Device Queue Families:");
             strings.add("Graphics Queue: " + (QueueFamilyIndices.graphicsSupported ? "§aSupported§r" : "§cUnsupported§r"));
             strings.add("Present Queue: " + (QueueFamilyIndices.presentSupported ? "§aSupported§r" : "§eFallback§r"));
-            strings.add("Transfer Queue: " + (QueueFamilyIndices.transferSupported ? "§eFallback§r" : "§aSupported§r"));
+            strings.add("Transfer Queue: " + (QueueFamilyIndices.transferSupported ? "§aSupported§r" : "§eFallback§r"));
         }
     
         if (MobileDeviceChecker.isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
