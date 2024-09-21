@@ -1,6 +1,6 @@
 package net.vulkanmod.vulkan;
 
-import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
+import net.vulkanmod.vulkan.device.MobileDeviceChecker;
 import oshi.hardware.CentralProcessor;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class SystemInfo {
     public static final String cpuInfo;
 
     static {
-        cpuInfo = AndroidDeviceChecker.isRunningOnAndroid() ? getProcessorNameForAndroid() : getProcessorNameForDesktop();
+        cpuInfo = MobileDeviceChecker.isRunningOnAndroid() ? getProcessorNameForAndroid() : getProcessorNameForDesktop();
     }
 
     public static String getProcessorNameForAndroid() {
