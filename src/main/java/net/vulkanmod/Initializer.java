@@ -56,15 +56,38 @@ public class Initializer implements ClientModInitializer {
             System.exit(0);
         }
 
-        LOGGER.info("== VulkanMod ==");
-
-        LOGGER.info("👨‍💻 Modified and Patched by: ShadowMC69 👨‍💻");
+        LOGGER.info("=====================================");
+        LOGGER.info("==> Thank you for using this mod! <==");
+        LOGGER.info("    > Modified By: ShadowMC69 <      ");
+        LOGGER.info("   > Originally By: xCollateral <    ");
+        LOGGER.info("=====================================");
         LOGGER.warn("☣️ If you NOT downloaded this from ShadowMC69, delete this immediately as this may contain malware! ☣️");
         LOGGER.warn("✖️ Also, we'll not help you in case of bugs/crashes if you downloaded this from others! ✖️");
-        LOGGER.warn("🎮 Game is launching! 🎮");
-
+        LOGGER.info("=====================================");
+        LOGGER.info("==> VulkanMod Configuration <==");
+        LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
+        LOGGER.info("Show Device RAM: " + CONFIG.showDeviceRAM);
+        LOGGER.info("Show Pojav Info: " + CONFIG.showPojav);
+        LOGGER.info("Advanced Culling: " + CONFIG.advCulling);
+        LOGGER.info("Indirect Draw: " + CONFIG.indirectDraw);
+        LOGGER.info("Unique Opaque Layer: " + CONFIG.uniqueOpaqueLayer);
+        LOGGER.info("Entity Culling: " + CONFIG.entityCulling);
+        LOGGER.info("Animations: " + CONFIG.animations);
+        LOGGER.info("Render Sky: " + CONFIG.renderSky);
+        LOGGER.info("Render Glowing Entity Outline: " + CONFIG.entityOutline);
+        LOGGER.info("Reset Highest Usage Records: " + CONFIG.resetHighUsageRec);
+        LOGGER.info("Device RAM Info update delay: " + CONFIG.ramInfoUpdate);
+        LOGGER.info("Swapchain Images: " + CONFIG.imageCount);
+        LOGGER.info("Device: " + CONFIG.device);
+        LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
+        LOGGER.info("Camera Optimization: " + CONFIG.cameraOopts);
+        LOGGER.info("Show Queue Family: " + CONFIG.showQueueFamily);
+        LOGGER.info("Trim Command Pool: " + CONFIG.trimCmd);
+        LOGGER.info("=====================================");
+        LOGGER.info("==> VulkanMod <==");
         Platform.init();
         VideoModeManager.init();
+        LOGGER.info("=====================================");
 
         var configPath = FabricLoader.getInstance()
                 .getConfigDir()
