@@ -96,6 +96,9 @@ public class WorldRenderer {
 
         BlockRenderer.setBlockColors(this.minecraft.getBlockColors());
 
+        if (Initializer.CONFIG.trimCmd) {
+            Renderer.getInstance().addOnResizeCallback(Queue::trimCmdPools);
+        }
         Renderer.getInstance().addOnResizeCallback(() -> {
             if (this.indirectBuffers.length != Renderer.getFramesNum())
                 allocateIndirectBuffers();
