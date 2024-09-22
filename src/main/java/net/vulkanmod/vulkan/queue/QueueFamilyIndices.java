@@ -75,6 +75,16 @@ public class QueueFamilyIndices {
                 }
             }
 
+            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                for (int c = 0; c < queueFamilies.capacity(); c++) {
+                    int queueFlags = queueFamilies.get(c).queueFlags();
+                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
+                        presentFamily = c;
+                        break;
+                    }
+                }
+            }
+            
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 for (int c = 0; c < queueFamilies.capacity(); c++) {
                     int queueFlags = queueFamilies.get(c).queueFlags();
