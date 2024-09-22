@@ -33,7 +33,7 @@ public class Config {
     public boolean renderSky = true;
     public boolean showPojav = false;
     public boolean cameraOopts = false;
-    public boolean trimCmd = false:
+    public boolean trimCmd = false;
     public int device = -1;
 
     public int ambientOcclusion = 1;
