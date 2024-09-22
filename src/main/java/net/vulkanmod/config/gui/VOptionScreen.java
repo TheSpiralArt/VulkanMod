@@ -201,7 +201,7 @@ public class VOptionScreen extends Screen {
 
     private void checkSupportButtonText() {
         String supportText = Component.translatable("vulkanmod.options.buttons.kofi").getString();
-        if (!(supportText.contains("Support me") || supportText.contains("Поддержите нас"))) {
+        if (!(supportText.contains("Support xCollateral") || supportText.contains("Поддержите xCollateral"))) {
             System.exit(0);
         }
     }
