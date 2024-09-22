@@ -26,6 +26,7 @@ public class GraphicsPipeline extends Pipeline {
     private final Object2LongMap<PipelineState> graphicsPipelines = new Object2LongOpenHashMap<>();
 
     private final VertexFormat vertexFormat;
+    private final VertexInputDescription vertexInputDescription;
     private final EnumSet<SPIRVUtils.SpecConstant> specConstants;
 
     private final long vertShaderModule;
@@ -38,7 +39,8 @@ public class GraphicsPipeline extends Pipeline {
         this.imageDescriptors = builder.imageDescriptors;
         this.pushConstants = builder.pushConstants;
         this.vertexFormat = builder.vertexFormat;
-        private final VertexInputDescription vertexInputDescription;
+
+        this.vertexInputDescription = new VertexInputDescription(this.vertexFormat);
 
         createDescriptorSetLayout();
         createPipelineLayout();
