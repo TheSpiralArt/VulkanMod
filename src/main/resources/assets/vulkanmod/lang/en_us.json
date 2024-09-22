@@ -56,6 +56,9 @@
   "vulkanmod.options.cameraOopts": "Camera Optimization",
   "vulkanmod.options.cameraOopts.tooltip": "Greatly optimizes camera performance but causes weird chunk delay when moving backwards.",
   
+  "vulkanmod.options.trimCmd": "Trim Command Pool",
+  "vulkanmod.options.trimCmd.tooltip": "Clears unused command pools but may slightly increase CPU load.",
+
   "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen",
 
   "vulkanmod.options.no": "§cNo§r",
