@@ -1,7 +1,6 @@
 package net.vulkanmod.vulkan.util;
 
-import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
-import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.*;
 
 public class VkResult {
 
