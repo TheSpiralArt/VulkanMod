@@ -53,8 +53,7 @@ public class AreaBuffer {
         // Free old segment
         if (oldOffset != -1) {
             // Need to delay segment freeing since it might be still used by prev frames in flight
-            this.setSegmentFree(oldOffset);
-//            MemoryManager.getInstance().addToFreeSegment(this, oldOffset);
+            MemoryManager.getInstance().addToFreeSegment(this, oldOffset);
         }
 
         int size = byteBuffer.remaining();
