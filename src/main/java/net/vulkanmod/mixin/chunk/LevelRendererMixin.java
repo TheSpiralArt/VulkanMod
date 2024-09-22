@@ -16,6 +16,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.WorldRenderer;
+import net.vulkanmod.vulkan.Vulkan;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -70,7 +71,7 @@ public abstract class LevelRendererMixin {
 
     @Overwrite
     public boolean shouldShowEntityOutlines() {
-        return Initializer.CONFIG.entityOutline;
+        return (Vulkan.getPretransformFlags() == 0 && Initializer.CONFIG.entityOutline);
     }
 
     /**
