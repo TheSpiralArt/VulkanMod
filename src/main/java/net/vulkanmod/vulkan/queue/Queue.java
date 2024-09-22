@@ -1,6 +1,7 @@
 package net.vulkanmod.vulkan.queue;
 
 import it.unimi.dsi.fastutil.longs.LongSet;
+import net.vulkanmod.vulkan.Vulkan:
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.Synchronization;
 import net.vulkanmod.vulkan.util.VUtil;
