@@ -293,6 +293,10 @@ public abstract class Options {
                                 value -> config.cameraOopts = value,
                                 () -> config.cameraOopts)
                                 .setTooltip(Component.translatable("vulkanmod.options.cameraOopts.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.trimCmd"),
+                                value -> config.trimCmd = value,
+                                () -> config.trimCmd)
+                                .setTooltip(Component.translatable("vulkanmod.options.trimCmd.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = drawIndirectSupported ? value : false,
                                     () -> drawIndirectSupported && config.indirectDraw)
