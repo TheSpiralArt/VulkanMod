@@ -25,8 +25,8 @@ public class Initializer implements ClientModInitializer {
     public static Config CONFIG;
 
     private static final String EXPECTED_MOD_MD5 = "4a1524427beb0511477ec2f27b6bc7cb";
-    private static final String EXPECTED_EN_US_MD5 = "dec26311b917326c7d977f90cb5735af";
-    private static final String EXPECTED_RU_RU_MD5 = "4011a626ad95746d887e75557c3d335f";
+    private static final String EXPECTED_EN_US_MD5 = "63d36d8e1eb79fecd886807902591fb4";
+    private static final String EXPECTED_RU_RU_MD5 = "ead376dd4c8619deb166d06699b78951";
     private static final String[] REQUIRED_TEXTS = {"Collateral", "ShadowMC69"};
 
     @Override
