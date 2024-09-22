@@ -169,6 +169,14 @@ public class Initializer implements ClientModInitializer {
         return sb.toString();
     }
 
+    private static void initializeConfig() {
+        var configPath = FabricLoader.getInstance()
+                .getConfigDir()
+                .resolve("vulkanmod_settings.json");
+
+        CONFIG = loadConfig(configPath);
+    }
+
     private static Config loadConfig(Path path) {
         Config config = Config.load(path);
 
