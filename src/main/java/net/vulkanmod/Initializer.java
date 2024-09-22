@@ -28,6 +28,10 @@ public class Initializer implements ClientModInitializer {
     private static final String EXPECTED_VLOGO_MD5 = "8e4ec46ddd96b2fbcef1e1a62b61b984";
     private static final String EXPECTED_VLOGO_TRANSPARENT_MD5 = "9ff8927d71469f25c09499911a3fb3b7";
 
+    static {
+        initializeConfig();
+    }
+
     @Override
     public void onInitializeClient() {
         VERSION = FabricLoader.getInstance()
@@ -58,7 +62,7 @@ public class Initializer implements ClientModInitializer {
 
         LOGGER.info("=====================================");
         LOGGER.info("==> Thank you for using this mod! <==");
-        LOGGER.info("    > Modified By: ShadowMC69 <      ");
+        LOGGER.info("   > Modified By: ShadowMC69 <       ");
         LOGGER.info("   > Originally By: xCollateral <    ");
         LOGGER.info("=====================================");
         LOGGER.warn("☣️ If you NOT downloaded this from ShadowMC69, delete this immediately as this may contain malware! ☣️");
