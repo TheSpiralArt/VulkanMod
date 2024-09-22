@@ -56,6 +56,9 @@
   "vulkanmod.options.cameraOopts": "Оптимизация камеры",
   "vulkanmod.options.cameraOopts.tooltip": "Значительно оптимизирует работу камеры, но вызывает странную задержку при движении назад.",
 
+  "vulkanmod.options.trimCmd": "Подрезать Command Pool",
+  "vulkanmod.options.trimCmd.tooltip": "Очищает неиспользуемые пулы команд, но может немного увеличить нагрузку на процессор.",
+
   "vulkanmod.options.windowedFullscreen": "Оконный полноэкранный режим",
 
   "vulkanmod.options.no": "§cНет§r",

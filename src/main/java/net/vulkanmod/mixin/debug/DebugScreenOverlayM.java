@@ -10,7 +10,7 @@ import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.device.MobileDeviceChecker;
 import net.vulkanmod.vulkan.memory.MemoryType;
-import net.vulkanmod.vulkan.queue.Queue;
+import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -87,10 +87,9 @@ public abstract class DebugScreenOverlayM {
         if (CONFIG.showQueueFamily) {
             strings.add("");
             strings.add("Device Queue Families:");
-            strings.add("Graphics Queue: " + (Queue.graphicsSupported ? "§aSupported§r" : "§cUnsupported§r"));
-            strings.add("Present Queue: " + (Queue.presentFallback ? "§eFallback§r" : "§aSupported§r"));
-            strings.add("Transfer Queue: " + (Queue.transferFallback ? "§eFallback§r" : "§aSupported§r"));
-            strings.add("Compute Queue: " + (Queue.computeFallback ? "§eFallback§r" : "§aSupported§r"));
+            strings.add("Graphics Queue: " + (QueueFamilyIndices.graphicsSupported ? "§aSupported§r" : "§cUnsupported§r"));
+            strings.add("Present Queue: " + (QueueFamilyIndices.presentSupported ? "§aSupported§r" : "§eFallback§r"));
+            strings.add("Transfer Queue: " + (QueueFamilyIndices.transferSupported ? "§aSupported§r" : "§eFallback§r"));
         }
     
         if (MobileDeviceChecker.isRunningOnCompatDevice() && CONFIG.showDeviceRAM) {
