@@ -1,5 +1,6 @@
 package net.vulkanmod.vulkan.util;
 
+import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class VkResult {
@@ -24,6 +25,10 @@ public class VkResult {
             case VK_ERROR_TOO_MANY_OBJECTS -> "VK_ERROR_TOO_MANY_OBJECTS";
             case VK_ERROR_FORMAT_NOT_SUPPORTED -> "VK_ERROR_FORMAT_NOT_SUPPORTED";
             case VK_ERROR_FRAGMENTED_POOL -> "VK_ERROR_FRAGMENTED_POOL";
+            case VK_ERROR_SURFACE_LOST_KHR -> "VK_ERROR_SURFACE_LOST_KHR";
+            case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR -> "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR";
+            case VK_SUBOPTIMAL_KHR -> "VK_SUBOPTIMAL_KHR";
+            case VK_ERROR_OUT_OF_DATE_KHR -> "VK_ERROR_OUT_OF_DATE_KHR";
             case VK_ERROR_UNKNOWN -> "VK_ERROR_UNKNOWN";
 
             default -> Integer.toString(result);
