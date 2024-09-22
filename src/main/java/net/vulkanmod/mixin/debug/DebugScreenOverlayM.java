@@ -101,6 +101,9 @@ public abstract class DebugScreenOverlayM {
             strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
             strings.add(DeviceRAMInfo.getBuffersInfo());
         }
+
+        strings.add("");
+        strings.add("Modified by §eShadowMC69§r");
         
         return strings;
     }
