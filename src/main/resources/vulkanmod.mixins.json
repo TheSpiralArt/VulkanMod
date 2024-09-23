@@ -10,13 +10,15 @@
     "window.WindowMixin",
     "window.WindowAccessor",
 
+    "chunk.ClientPacketListenerM",
+    "chunk.ClientChunkCacheM",
     "chunk.DirectionMixin",
     "chunk.FrustumMixin",
     "chunk.LevelRendererMixin",
     "chunk.RenderBuffersM",
+    "chunk.SectionRenderDispatcherM",
+    "chunk.ViewAreaM",
     "chunk.VisibilitySetMixin",
-    "chunk.ClientPacketListenerM",
-    "chunk.ClientChunkCacheM",
 
     "compatibility.EffectInstanceM",
     "compatibility.ProgramM",
@@ -25,6 +27,7 @@
     "compatibility.gl.GL15M",
     "compatibility.gl.GL30M",
 
+    "debug.crash_report.SystemReportM",
     "debug.DebugScreenOverlayM",
     "debug.GlDebugInfoM",
     "debug.KeyboardHandlerM",
