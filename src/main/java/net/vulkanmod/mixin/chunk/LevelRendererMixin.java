@@ -48,7 +48,7 @@ public abstract class LevelRendererMixin {
     }
 
     @Inject(method = "allChanged", at = @At("RETURN"))
-    private void allChanged(CallbackInfo ci) {
+    private void onAllChanged(CallbackInfo ci) {
         this.worldRenderer.allChanged();
     }
 
