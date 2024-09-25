@@ -155,11 +155,22 @@ public class TaskDispatcher {
         DrawBuffers drawBuffers = renderArea.getDrawBuffers();
 
         // Check if area has been dismissed before uploading
-        if (WorldRenderer.getInstance().getChunkAreaManager().getChunkArea(renderArea.index) != renderArea)
+        ChunkAreaManager chunkAreaManager = WorldRenderer.getInstance().getChunkAreaManager();
+        if (chunkAreaManager.getChunkArea(renderArea.index) != renderArea)
             return;
 
         if(compileResult.fullUpdate) {
-            compileResult.renderedLayers.forEach((key, value) -> drawBuffers.upload(section, value, key));
+            var renderLayers = compileResult.renderedLayers;
+            for(TerrainRenderType renderType : TerrainRenderType.VALUES) {
+                UploadBuffer uploadBuffer = renderLayers.get(renderType);
+
+                if(uploadBuffer != null) {
+                    drawBuffers.upload(section, uploadBuffer, renderType);
+                } else {
+                    section.getDrawParameters(renderType).reset(renderArea, renderType);
+                }
+            }
+
             compileResult.updateSection();
         }
         else {
