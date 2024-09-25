@@ -2,30 +2,22 @@ package net.vulkanmod.render.vertex;
 
 import net.minecraft.client.renderer.RenderType;
 import net.vulkanmod.interfaces.ExtendedRenderType;
-import net.vulkanmod.vulkan.VRenderSystem;
 
 import java.util.EnumSet;
 
 public enum TerrainRenderType {
-    SOLID(0.0f),
-    CUTOUT_MIPPED(0.5f),
-    CUTOUT(0.1f),
-    TRANSLUCENT(0.0f),
-    TRIPWIRE(0.1f);
+    SOLID,
+    CUTOUT,
+    CUTOUT_MIPPED,
+    TRANSLUCENT,
+    TRIPWIRE;
 
     public static final EnumSet<TerrainRenderType> VALUES = EnumSet.allOf(TerrainRenderType.class);
 
     public static final EnumSet<TerrainRenderType> COMPACT_RENDER_TYPES = EnumSet.of(CUTOUT_MIPPED, TRANSLUCENT);
     public static final EnumSet<TerrainRenderType> SEMI_COMPACT_RENDER_TYPES = EnumSet.of(CUTOUT_MIPPED, CUTOUT, TRANSLUCENT);
 
-    public final float alphaCutout;
-
-    TerrainRenderType(float alphaCutout) {
-        this.alphaCutout = alphaCutout;
-    }
-
-    public void setCutoutUniform() {
-        VRenderSystem.alphaCutout = this.alphaCutout;
+    TerrainRenderType() {
     }
 
     public static TerrainRenderType get(RenderType renderType) {
