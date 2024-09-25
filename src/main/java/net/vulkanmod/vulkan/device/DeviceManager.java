@@ -315,14 +315,12 @@ public abstract class DeviceManager {
 
         if (availableDevices.isEmpty()) {
             stringBuilder.append("\tNo available device found");
-            stringBuilder.append("\tDevice: %s\n".formatted(device.deviceName));
-
-            stringBuilder.append("\t\tVulkan Version: %s\n".formatted(device.vkVersion));
-            
         }
 
         for (Device device : availableDevices) {
-            stringBuilder.append("Device: %s\n".formatted(device.deviceName));
+            stringBuilder.append("\tDevice: %s\n".formatted(device.deviceName));
+
+            stringBuilder.append("\t\tVulkan Version: %s\n".formatted(device.vkVersion));
 
             stringBuilder.append("\t\t");
             var unsupportedExtensions = device.getUnsupportedExtensions(Vulkan.REQUIRED_EXTENSION);
