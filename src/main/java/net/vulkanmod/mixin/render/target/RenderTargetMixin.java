@@ -18,6 +18,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderTarget.class)
 public abstract class RenderTargetMixin implements ExtendedRenderTarget {
@@ -121,9 +124,6 @@ public abstract class RenderTargetMixin implements ExtendedRenderTarget {
         }
     }
 
-    /**
-     * @author
-     */
     @Inject(method = "_blitToScreen", at = @At("HEAD"), cancellable = true)
     private void _blitToScreen(int width, int height, boolean disableBlend, CallbackInfo ci) {
         if (needClear) {
@@ -135,6 +135,8 @@ public abstract class RenderTargetMixin implements ExtendedRenderTarget {
         VTextureSelector.bindTexture(0, framebuffer.getColorAttachment());
 
         DrawUtil.blitToScreen();
+
+        ci.cancel();
     }
 
     @Override
