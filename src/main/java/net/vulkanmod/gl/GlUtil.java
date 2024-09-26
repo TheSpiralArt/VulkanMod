@@ -88,7 +88,7 @@ public abstract class GlUtil {
                         case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8_UNORM;
                         default -> throw new IllegalStateException("Unexpected type: " + type);
                     };
-            case GL11.GL_DEPTH_COMPONENT ->
+            case GL11.GL_DEPTH_COMPONENT, GL30.GL_DEPTH_COMPONENT32F, GL30.GL_DEPTH_COMPONENT24 ->
 //                    switch (type) {
 //                        case GL11.GL_FLOAT -> VK_FORMAT_D32_SFLOAT;
 //                        default -> throw new IllegalStateException("Unexpected value: " + type);
