@@ -124,8 +124,8 @@ public abstract class RenderTargetMixin implements ExtendedRenderTarget {
     /**
      * @author
      */
-    @Overwrite
-    private void _blitToScreen(int width, int height, boolean disableBlend) {
+    @Inject(method = "_blitToScreen", at = @At("HEAD"), cancellable = true)
+    private void _blitToScreen(int width, int height, boolean disableBlend, CallbackInfo ci) {
         if (needClear) {
             // If true it means target has not been used, thus we can skip blit
             return;
