@@ -39,13 +39,13 @@ public class VBO {
         this.vertexCount = parameters.vertexCount();
         this.mode = parameters.mode();
 
-        this.configureVertexBuffer(parameters, meshData.vertexBuffer());
-        this.configureIndexBuffer(parameters, meshData.indexBuffer());
+        this.uploadVertexBuffer(parameters, meshData.vertexBuffer());
+        this.uploadIndexBuffer(meshData.indexBuffer());
 
         meshData.close();
     }
 
-    private void configureVertexBuffer(MeshData.DrawState parameters, ByteBuffer data) {
+    private void uploadVertexBuffer(MeshData.DrawState parameters, ByteBuffer data) {
         if (data != null) {
             if (this.vertexBuffer != null)
                 this.vertexBuffer.freeBuffer();
@@ -55,7 +55,7 @@ public class VBO {
         }
     }
 
-    private void configureIndexBuffer(MeshData.DrawState parameters, ByteBuffer data) {
+    public void uploadIndexBuffer(ByteBuffer data) {
         if (data == null) {
 
             AutoIndexBuffer autoIndexBuffer;
@@ -140,6 +140,10 @@ public class VBO {
     public void draw() {
         if (this.indexCount != 0) {
             RenderSystem.assertOnRenderThread();
+
+            Renderer renderer = Renderer.getInstance();
+            Pipeline pipeline = renderer.getBoundPipeline();
+            renderer.uploadAndBindUBOs(pipeline);
 
             Renderer.getDrawer().drawIndexed(this.vertexBuffer, this.indexBuffer, this.indexCount);
         }
