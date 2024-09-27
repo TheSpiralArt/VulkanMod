@@ -23,6 +23,7 @@ public abstract class ModelPartM {
     @Shadow @Final private List<ModelPart.Cube> cubes;
 
     Vector3f normal = new Vector3f();
+    color = ColorUtil.RGBA.fromArgb32(color);
 
     @Inject(method = "compile", at = @At("HEAD"), cancellable = true)
     private void injCompile(PoseStack.Pose pose, VertexConsumer vertexConsumer, int light, int overlay, int color, CallbackInfo ci) {
