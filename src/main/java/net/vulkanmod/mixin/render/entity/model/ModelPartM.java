@@ -36,9 +36,9 @@ public abstract class ModelPartM {
         Matrix3f matrix3f = pose.normal();
 
         ExtendedVertexBuilder vertexBuilder = ExtendedVertexBuilder.of(vertexConsumer);
-        color = ColorUtil.RGBA.fromArgb32(color);
 
         if (vertexBuilder != null && vertexBuilder.canUseFastVertex()) {
+            color = ColorUtil.RGBA.fromArgb32(color);
 
             for (ModelPart.Cube cube : this.cubes) {
                 ModelPartCubeMixed cubeMixed = (ModelPartCubeMixed)(cube);
