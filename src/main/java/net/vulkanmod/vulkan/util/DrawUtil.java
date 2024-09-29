@@ -7,9 +7,11 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.vulkan.Renderer;
+import net.vulkanmod.vulkan.VRenderSystem;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.vulkan.VK11;
 import org.lwjgl.vulkan.VkCommandBuffer;
 
@@ -33,6 +35,7 @@ public class DrawUtil {
         VK11.vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 
         RenderSystem.enableCull();
+        VRenderSystem.setPrimitiveTopologyGL(GL11.GL_TRIANGLES);
     }
 
     public static void defualtBlit() {
