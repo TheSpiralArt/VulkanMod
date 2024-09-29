@@ -74,17 +74,22 @@ public abstract class GlUtil {
                 };
             case GL30.GL_BGR -> 
                 switch (type) {
-                    case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_B8G8R8_UNORM;
+                    case GL11.GL_UNSIGNED_BYTE, GL11.GL_BYTE -> VK_FORMAT_B8G8R8_UNORM;
                     default -> throw new IllegalStateException("Unexpected type: " + type);
                 };
             case GL11.GL_RGB ->
                 switch (type) {
-                    case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8G8B8_UNORM;
+                    case GL11.GL_UNSIGNED_BYTE, GL11.GL_BYTE -> VK_FORMAT_R8G8B8_UNORM;
                     default -> throw new IllegalStateException("Unexpected type: " + type);
                 };
+            case GL30.GL_RG ->
+                switch (type) {
+                    case GL11.GL_UNSIGNED_BYTE, GL11.GL_BYTE -> VK_FORMAT_R8G8_UNORM;
+                    default -> throw new IllegalStateException("Unexpected type: " + type);
+            };
             case GL11.GL_RED ->
                 switch (type) {
-                    case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8_UNORM;
+                    case GL11.GL_UNSIGNED_BYTE, GL11.GL_BYTE -> VK_FORMAT_R8_UNORM;
                     default -> throw new IllegalStateException("Unexpected type: " + type);
                 };
             case GL11.GL_DEPTH_COMPONENT, GL30.GL_DEPTH_COMPONENT32F, GL30.GL_DEPTH_COMPONENT24, GL30.GL_DEPTH32F_STENCIL8, GL30.GL_DEPTH24_STENCIL8, GL30.GL_DEPTH_COMPONENT16 ->
