@@ -72,7 +72,7 @@ public abstract class GlUtil {
                     case GL11.GL_UNSIGNED_BYTE, GL11.GL_BYTE, GL30.GL_UNSIGNED_INT_8_8_8_8, GL30.GL_UNSIGNED_INT_8_8_8_8_REV -> VK_FORMAT_B8G8R8A8_UNORM;
                     default -> throw new IllegalStateException("Unexpected type: " + type);
                 };
-            case GL11.GL_BGR -> 
+            case GL30.GL_BGR -> 
                 switch (type) {
                     case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_B8G8R8_UNORM;
                     default -> throw new IllegalStateException("Unexpected type: " + type);
@@ -107,7 +107,7 @@ public abstract class GlUtil {
         return switch (vFormat) {
             case VK_FORMAT_R8G8B8A8_UNORM -> GL11.GL_RGBA;
             case VK_FORMAT_B8G8R8A8_UNORM -> GL30.GL_BGRA;
-            case VK_FORMAT_B8G8R8_UNORM -> GL11.GL_BGR;
+            case VK_FORMAT_B8G8R8_UNORM -> GL30.GL_BGR;
             case VK_FORMAT_R8G8_UNORM -> GL30.GL_RG;
             case VK_FORMAT_R8_UNORM -> GL11.GL_RED;
             case VK_FORMAT_R8G8B8_UNORM -> GL11.GL_RGB;
