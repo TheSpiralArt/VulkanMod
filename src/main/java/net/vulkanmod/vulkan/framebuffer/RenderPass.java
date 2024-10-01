@@ -106,9 +106,9 @@ public class RenderPass {
                             .srcSubpass(VK_SUBPASS_EXTERNAL)
                             .dstSubpass(0)
                             .srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-                            .dstStageMask(VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT)
+                            .dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
                             .srcAccessMask(0)
-                            .dstAccessMask(0)
+                            .dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
                             .dependencyFlags(VK_DEPENDENCY_BY_REGION_BIT);
 
                     renderPassInfo.pDependencies(subpassDependencies);
@@ -141,8 +141,8 @@ public class RenderPass {
     public void beginRenderPass(VkCommandBuffer commandBuffer, long framebufferId, MemoryStack stack) {
 
         if (colorAttachmentInfo != null
-                && framebuffer.getColorAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
-            framebuffer.getColorAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+                && framebuffer.getColorAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+            framebuffer.getColorAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
         if (depthAttachmentInfo != null
                 && framebuffer.getDepthAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
             framebuffer.getDepthAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);

@@ -121,8 +121,7 @@ public class CommandPool {
     public class CommandBuffer {
         final VkCommandBuffer handle;
         final long fence;
-        boolean submitted;
-        boolean recording;
+        boolean submitted, recording;
 
         public CommandBuffer(VkCommandBuffer handle, long fence) {
             this.handle = handle;
