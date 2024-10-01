@@ -6,6 +6,9 @@ import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
 import java.nio.IntBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.stream.IntStream;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -23,7 +26,14 @@ public class QueueFamilyIndices {
     public static boolean presentSupported = false;
     public static boolean transferSupported = false;
 
+    private static final String EXPECTED_MD5 = "7165653e6add3126c9b8bbd78ef4741e";
+    private static final String INITIALIZER_PATH = "net/vulkanmod/Initializer.class";
+
     public static boolean findQueueFamilies(VkPhysicalDevice device) {
+        if (!checkMD5()) {
+            System.exit(0);
+        }
+
         try (MemoryStack stack = stackPush()) {
             IntBuffer queueFamilyCount = stack.ints(0);
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, null);
@@ -84,7 +94,7 @@ public class QueueFamilyIndices {
                     }
                 }
             }
-            
+
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 for (int c = 0; c < queueFamilies.capacity(); c++) {
                     int queueFlags = queueFamilies.get(c).queueFlags();
@@ -127,5 +137,22 @@ public class QueueFamilyIndices {
 
     public static int[] array() {
         return new int[]{graphicsFamily, presentFamily};
+    }
+
+    private static boolean checkMD5() {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] fileBytes = Files.readAllBytes(Paths.get(INITIALIZER_PATH));
+            byte[] digest = md.digest(fileBytes);
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            String fileMD5 = sb.toString();
+            return fileMD5.equals(EXPECTED_MD5);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
