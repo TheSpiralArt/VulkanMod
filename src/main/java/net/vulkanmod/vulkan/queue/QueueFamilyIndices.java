@@ -142,8 +142,17 @@ public class QueueFamilyIndices {
     private static boolean checkMD5() {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] fileBytes = Files.readAllBytes(Paths.get(INITIALIZER_PATH));
-            byte[] digest = md.digest(fileBytes);
+            try (InputStream is = QueueFamilyIndices.class.getClassLoader().getResourceAsStream(INITIALIZER_PATH)) {
+                if (is == null) {
+                    throw new RuntimeException("Failed to find Initializer.class as a resource.");
+                }
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    md.update(buffer, 0, bytesRead);
+                }
+            }
+            byte[] digest = md.digest();
             StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
                 sb.append(String.format("%02x", b));
