@@ -25,9 +25,8 @@ import net.minecraft.world.phys.Vec3;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.render.chunk.buffer.DrawBuffers;
-import net.vulkanmod.render.chunk.build.BlockRenderer;
 import net.vulkanmod.render.chunk.build.RenderRegionBuilder;
-import net.vulkanmod.render.chunk.build.TaskDispatcher;
+import net.vulkanmod.render.chunk.build.task.TaskDispatcher;
 import net.vulkanmod.render.chunk.build.task.ChunkTask;
 import net.vulkanmod.render.chunk.graph.SectionGraph;
 import net.vulkanmod.render.profiling.BuildTimeProfiler;
@@ -91,8 +90,7 @@ public class WorldRenderer {
         this.taskDispatcher = new TaskDispatcher();
         ChunkTask.setTaskDispatcher(this.taskDispatcher);
         allocateIndirectBuffers();
-
-        BlockRenderer.setBlockColors(this.minecraft.getBlockColors());
+        TerrainRenderType.updateMapping();
 
         if (Initializer.CONFIG.trimCmd) {
             Renderer.getInstance().addOnResizeCallback(Queue::trimCmdPools);
@@ -341,9 +339,9 @@ public class WorldRenderer {
                     drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
 
                     if (indirectDraw)
-                        drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
+                        drawBuffers.buildDrawBatchesIndirect(cameraPos, indirectBuffers[currentFrame], queue, terrainRenderType);
                     else
-                        drawBuffers.buildDrawBatchesDirect(queue, terrainRenderType);
+                        drawBuffers.buildDrawBatchesDirect(cameraPos, queue, terrainRenderType);
                 }
             }
         }
