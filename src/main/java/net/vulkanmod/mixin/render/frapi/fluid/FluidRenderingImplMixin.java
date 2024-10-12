@@ -23,4 +23,4 @@ public class FluidRenderingImplMixin {
 	public static void renderDefault(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		DefaultFluidRenderers.add(handler);
 	}
-                                   }
+}
