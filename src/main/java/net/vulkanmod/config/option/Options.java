@@ -277,12 +277,13 @@ public abstract class Options {
                                 },
                                 () -> config.uniqueOpaqueLayer)
                                 .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
-                        new SwitchOption(Component.translatable("Back face culling"),
+                        new SwitchOption(Component.translatable("vulkanmod.options.backfaceCulling"),
                                 value -> {
                                     config.backFaceCulling = value;
                                     Minecraft.getInstance().levelRenderer.allChanged();
                                 },
-                                () -> config.backFaceCulling),
+                                () -> config.backFaceCulling)
+                                .setTooltip(Component.translatable("vulkanmod.options.backfaceCulling.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.animations"),
                                 value -> {
                                     config.animations = value;
