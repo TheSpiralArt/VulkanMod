@@ -19,7 +19,7 @@ public class Config {
     public boolean windowedFullscreen = false;
 
     public int advCulling = 2;
-    public boolean indirectDraw = false;
+    public boolean indirectDraw = true;
 
     public boolean uniqueOpaqueLayer = true;
     public boolean entityCulling = true;
@@ -37,6 +37,7 @@ public class Config {
     public int device = -1;
 
     public int ambientOcclusion = 1;
+    public boolean backFaceCulling = true;
 
     public void write() {
 
