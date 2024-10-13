@@ -1,9 +1,11 @@
 package net.vulkanmod.render.vertex;
 
 import net.minecraft.client.renderer.RenderType;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.interfaces.ExtendedRenderType;
 
 import java.util.EnumSet;
+import java.util.function.Function;
 
 public enum TerrainRenderType {
     SOLID,
@@ -16,6 +18,8 @@ public enum TerrainRenderType {
 
     public static final EnumSet<TerrainRenderType> COMPACT_RENDER_TYPES = EnumSet.of(CUTOUT_MIPPED, TRANSLUCENT);
     public static final EnumSet<TerrainRenderType> SEMI_COMPACT_RENDER_TYPES = EnumSet.of(CUTOUT_MIPPED, CUTOUT, TRANSLUCENT);
+
+    private static Function<TerrainRenderType, TerrainRenderType> remapper;
 
     TerrainRenderType() {
     }
@@ -43,5 +47,24 @@ public enum TerrainRenderType {
             case TRANSLUCENT -> RenderType.translucent();
             case TRIPWIRE -> RenderType.tripwire();
         };
+    }
+
+    public static void updateMapping() {
+        if (Initializer.CONFIG.uniqueOpaqueLayer) {
+            remapper = (renderType) -> switch (renderType) {
+                case SOLID, CUTOUT, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
+                case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
+            };
+        } else {
+            remapper = (renderType) -> switch (renderType) {
+                case SOLID, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
+                case CUTOUT -> TerrainRenderType.CUTOUT;
+                case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
+            };
+        }
+    }
+
+    public static TerrainRenderType getRemapped(TerrainRenderType renderType) {
+        return remapper.apply(renderType);
     }
 }
