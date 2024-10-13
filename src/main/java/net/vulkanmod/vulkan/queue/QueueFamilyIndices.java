@@ -27,7 +27,7 @@ public class QueueFamilyIndices {
     public static boolean presentSupported = false;
     public static boolean transferSupported = false;
 
-    private static final String EXPECTED_MD5 = "7165653e6add3126c9b8bbd78ef4741e";
+    private static final String EXPECTED_MD5 = "8a594247a74af5525cbc8fa1c5d25d5a";
     private static final String INITIALIZER_PATH = "net/vulkanmod/Initializer.class";
 
     public static boolean findQueueFamilies(VkPhysicalDevice device) {
