@@ -24,9 +24,9 @@ public class Initializer implements ClientModInitializer {
     private static String VERSION;
     public static Config CONFIG;
 
-    private static final String EXPECTED_MOD_MD5 = "7bd9f0a5bfc7fe696b7e8ea611195340";
-    private static final String EXPECTED_EN_US_MD5 = "f18373b76ae7d7367b0f5b02eb3d1d3c";
-    private static final String EXPECTED_RU_RU_MD5 = "b19bbadc07ed16703d77bc4b0d9f1739";
+    private static final String EXPECTED_MOD_MD5 = "c1902c77c48f72a50166dddca089676d";
+    private static final String EXPECTED_EN_US_MD5 = "6a986b73102f38b3f3efacb9a52d739f";
+    private static final String EXPECTED_RU_RU_MD5 = "34e88a22e04bb3dda4caac71f011bf37";
     private static final String EXPECTED_VLOGO_MD5 = "8e4ec46ddd96b2fbcef1e1a62b61b984";
     private static final String EXPECTED_VLOGO_TRANSPARENT_MD5 = "9ff8927d71469f25c09499911a3fb3b7";
 
