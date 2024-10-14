@@ -31,7 +31,7 @@
 
   "vulkanmod.options.indirectDrawSupported": "Поддерживается ли устройство: ",
   "vulkanmod.options.indirectDraw": "Альтернативный расчёт",
-  "vulkanmod.options.indirectDraw.tooltip": "Снижает нагрузку на ЦП, но увеличивает нагрузку на ГП. Включение может помочь в системах с ограниченными ЦП.",
+  "vulkanmod.options.indirectDraw.tooltip": "Снижает нагрузку на CPU, но может увеличить нагрузку на GPU.",
 
   "vulkanmod.options.backfaceCulling": "Выбраковка backface",
   "vulkanmod.options.backfaceCulling.tooltip": "Убирает невидимые грани блоков на CPU, повышая производительность GPU. Для предотвращения увеличения нагрузки на CPU включите функцию Альтернативный расчёт.",
