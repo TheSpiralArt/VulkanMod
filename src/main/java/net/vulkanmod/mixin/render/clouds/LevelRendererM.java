@@ -23,12 +23,8 @@ public abstract class LevelRendererM {
     @Unique
     private CloudRenderer cloudRenderer;
 
-    /**
-     * @author
-     * @reason
-     */
-    @Overwrite
-    public void renderClouds(PoseStack poseStack, Matrix4f modelView, Matrix4f projection, float partialTicks, double camX, double camY, double camZ) {
+    @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
+    public void renderClouds(PoseStack poseStack, Matrix4f modelView, Matrix4f projection, float partialTicks, double camX, double camY, double camZ, CallbackInfo ci) {
         if (this.cloudRenderer == null) {
             this.cloudRenderer = new CloudRenderer(CLOUDS_LOCATION);
         }
