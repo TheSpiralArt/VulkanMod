@@ -30,6 +30,7 @@ public abstract class LevelRendererM {
         }
 
         this.cloudRenderer.renderClouds(this.level, poseStack, modelView, projection, this.ticks, partialTicks, camX, camY, camZ);
+        ci.cancel();
     }
 
     @Inject(method = "allChanged", at = @At("RETURN"))
