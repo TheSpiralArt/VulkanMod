@@ -3,6 +3,7 @@ package net.vulkanmod.vulkan.shader;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import net.vulkanmod.vulkan.VRenderSystem;
+import net.vulkanmod.vulkan.shader.layout.Uniform;
 import net.vulkanmod.vulkan.util.MappedBuffer;
 
 import java.util.function.Supplier;
@@ -50,5 +51,16 @@ public class Uniforms {
         vec4f_uniformMap.put("ColorModulator", VRenderSystem::getShaderColor);
         vec4f_uniformMap.put("FogColor", VRenderSystem::getShaderFogColor);
 
+    }
+
+    public static Supplier<MappedBuffer> getUniformSupplier(String type, String name) {
+        return switch (type) {
+            case "mat4" -> Uniforms.mat4f_uniformMap.get(name);
+            case "vec4" -> Uniforms.vec4f_uniformMap.get(name);
+            case "vec3" -> Uniforms.vec3f_uniformMap.get(name);
+            case "vec2" -> Uniforms.vec2f_uniformMap.get(name);
+
+            default -> null;
+        };
     }
 }
