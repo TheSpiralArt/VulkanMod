@@ -114,7 +114,7 @@ public class EffectInstanceM {
             GlslConverter converter = new GlslConverter();
 
             converter.process(vshSrc, fshSrc);
-            UBO ubo = converter.getUBO();
+            UBO ubo = converter.createUBO();
             this.setUniformSuppliers(ubo);
 
             Pipeline.Builder builder = new Pipeline.Builder(DefaultVertexFormat.POSITION);
