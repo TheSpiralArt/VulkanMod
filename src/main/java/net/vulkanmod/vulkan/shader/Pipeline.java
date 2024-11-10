@@ -18,23 +18,26 @@ import net.vulkanmod.vulkan.shader.descriptor.ManualUBO;
 import net.vulkanmod.vulkan.shader.descriptor.UBO;
 import net.vulkanmod.vulkan.shader.layout.AlignedStruct;
 import net.vulkanmod.vulkan.shader.layout.PushConstants;
+import net.vulkanmod.vulkan.shader.layout.Uniform;
 import net.vulkanmod.vulkan.texture.SamplerManager;
 import net.vulkanmod.vulkan.texture.VTextureSelector;
 import net.vulkanmod.vulkan.texture.VulkanImage;
+import net.vulkanmod.vulkan.util.MappedBuffer;
 import org.apache.commons.lang3.Validate;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.*;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static net.vulkanmod.vulkan.shader.SPIRVUtils.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 
@@ -479,16 +482,6 @@ public abstract class Pipeline {
     }
 
     public static class Builder {
-
-        final EnumSet<SpecConstant> specConstants = EnumSet.noneOf(SpecConstant.class);
-        
-        public static GraphicsPipeline createGraphicsPipeline(VertexFormat format, String path) {
-            Pipeline.Builder pipelineBuilder = new Pipeline.Builder(format, path);
-            pipelineBuilder.parseBindingsJSON();
-            pipelineBuilder.compileShaders();
-            return pipelineBuilder.createGraphicsPipeline();
-        }
-
         final VertexFormat vertexFormat;
         final String shaderPath;
         List<UBO> UBOs;
@@ -502,6 +495,8 @@ public abstract class Pipeline {
 
         RenderPass renderPass;
 
+        Function<Uniform.Info, Supplier<MappedBuffer>> uniformSupplierGetter;
+
         public Builder(VertexFormat vertexFormat, String path) {
             this.vertexFormat = vertexFormat;
             this.shaderPath = path;
@@ -509,6 +504,10 @@ public abstract class Pipeline {
 
         public Builder(VertexFormat vertexFormat) {
             this(vertexFormat, null);
+        }
+
+        public Builder() {
+            this(null, null);
         }
 
         public GraphicsPipeline createGraphicsPipeline() {
@@ -532,39 +531,27 @@ public abstract class Pipeline {
             this.fragShaderSPIRV = fragShaderSPIRV;
         }
 
-        public void compileShaders() {
-            String resourcePath = SPIRVUtils.class.getResource("/assets/vulkanmod/shaders/").toExternalForm();
-
-            this.vertShaderSPIRV = compileShaderAbsoluteFile(String.format("%s%s.vsh", resourcePath, this.shaderPath), ShaderKind.VERTEX_SHADER);
-            this.fragShaderSPIRV = compileShaderAbsoluteFile(String.format("%s%s.fsh", resourcePath, this.shaderPath), ShaderKind.FRAGMENT_SHADER);
-        }
-
         public void compileShaders(String name, String vsh, String fsh) {
-            this.vertShaderSPIRV = compileShader(String.format("%s.vsh", name), vsh, ShaderKind.VERTEX_SHADER);
-            this.fragShaderSPIRV = compileShader(String.format("%s.fsh", name), fsh, ShaderKind.FRAGMENT_SHADER);
+            this.vertShaderSPIRV = SPIRVUtils.compileShader(String.format("%s.vsh", name), vsh, ShaderKind.VERTEX_SHADER);
+            this.fragShaderSPIRV = SPIRVUtils.compileShader(String.format("%s.fsh", name), fsh, ShaderKind.FRAGMENT_SHADER);
         }
 
-        public void parseBindingsJSON() {
-            Validate.notNull(this.shaderPath, "Cannot parse bindings: shaderPath is null");
+        public void setVertShaderSPIRV(SPIRV vertShaderSPIRV) {
+            this.vertShaderSPIRV = vertShaderSPIRV;
+        }
 
+        public void setFragShaderSPIRV(SPIRV fragShaderSPIRV) {
+            this.fragShaderSPIRV = fragShaderSPIRV;
+        }
+
+        public void parseBindings(JsonObject jsonObject) {
             this.UBOs = new ArrayList<>();
             this.imageDescriptors = new ArrayList<>();
-
-            JsonObject jsonObject;
-
-            String resourcePath = String.format("/assets/vulkanmod/shaders/%s.json", this.shaderPath);
-            InputStream stream = Pipeline.class.getResourceAsStream(resourcePath);
-
-            if (stream == null)
-                throw new NullPointerException(String.format("Failed to load: %s", resourcePath));
-
-            jsonObject = GsonHelper.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
 
             JsonArray jsonUbos = GsonHelper.getAsJsonArray(jsonObject, "UBOs", null);
             JsonArray jsonManualUbos = GsonHelper.getAsJsonArray(jsonObject, "ManualUBOs", null);
             JsonArray jsonSamplers = GsonHelper.getAsJsonArray(jsonObject, "samplers", null);
             JsonArray jsonPushConstants = GsonHelper.getAsJsonArray(jsonObject, "PushConstants", null);
-            JsonArray jsonSpecConstants = GsonHelper.getAsJsonArray(jsonObject, "SpecConstants", null);
 
             if (jsonUbos != null) {
                 for (JsonElement jsonelement : jsonUbos) {
@@ -585,24 +572,10 @@ public abstract class Pipeline {
             if (jsonPushConstants != null) {
                 this.parsePushConstantNode(jsonPushConstants);
             }
-
-            if(jsonSpecConstants != null) {
-                this.parseSpecConstantNode(jsonSpecConstants);
-            }
         }
 
-        private void parseSpecConstantNode(JsonArray jsonSpecConstants) {
-//            AlignedStruct.Builder builder = new AlignedStruct.Builder();
-
-            for(JsonElement jsonelement : jsonSpecConstants) {
-                JsonObject jsonobject2 = GsonHelper.convertToJsonObject(jsonelement, "SC");
-
-                String name = GsonHelper.getAsString(jsonobject2, "name");
-//                String type2 = GsonHelper.getAsString(jsonobject2, "type");
-
-
-                this.specConstants.add(SpecConstant.valueOf(name));
-            }
+        public void setUniformSupplierGetter(Function<Uniform.Info, Supplier<MappedBuffer>> uniformSupplierGetter) {
+            this.uniformSupplierGetter = uniformSupplierGetter;
         }
 
         private void parseUboNode(JsonElement jsonelement) {
@@ -618,11 +591,24 @@ public abstract class Pipeline {
                 //need to store some infos
                 String name = GsonHelper.getAsString(jsonobject2, "name");
                 String type2 = GsonHelper.getAsString(jsonobject2, "type");
-                int j = GsonHelper.getAsInt(jsonobject2, "count");
+                int count = GsonHelper.getAsInt(jsonobject2, "count");
 
-                builder.addUniformInfo(type2, name, j);
+                Uniform.Info uniformInfo = Uniform.createUniformInfo(type2, name, count);
+                uniformInfo.setupSupplier();
 
+                if (!uniformInfo.hasSupplier()) {
+                    var uniformSupplier = this.uniformSupplierGetter.apply(uniformInfo);
+
+                    if (uniformSupplier == null) {
+                        throw new IllegalStateException("No uniform supplier found for uniform: (%s:%s)".formatted(type2, name));
+                    }
+
+                    uniformInfo.setBufferSupplier(this.uniformSupplierGetter.apply(uniformInfo));
+                }
+
+                builder.addUniformInfo(uniformInfo);
             }
+
             UBO ubo = builder.buildUBO(binding, type);
 
             if (binding >= this.nextBinding)
