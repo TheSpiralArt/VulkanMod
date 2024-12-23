@@ -24,13 +24,9 @@ public class Initializer implements ClientModInitializer {
     private static String VERSION;
     public static Config CONFIG;
 
-    private static final String EXPECTED_MOD_MD5 = "0cb52c6ecef6bf2df54826e91dd1e2e0";
+    private static final String EXPECTED_MOD_MD5 = "a86b2a6d9adc4f7e6a8e3e90f0f205ae";
     private static final String EXPECTED_VLOGO_MD5 = "8e4ec46ddd96b2fbcef1e1a62b61b984";
     private static final String EXPECTED_VLOGO_TRANSPARENT_MD5 = "9ff8927d71469f25c09499911a3fb3b7";
-
-    static {
-        initializeConfig();
-    }
 
     @Override
     public void onInitializeClient() {
